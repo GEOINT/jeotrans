@@ -1,0 +1,61 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>gov.ic.geoint</groupId>
+    <artifactId>jeotrans</artifactId>
+    <version>1.1</version>
+    <packaging>jar</packaging>
+    <name>jeotrans</name>
+ 
+ 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    
+    <!-- blame line -->
+    <developers>
+        <developer>
+            <id>evilelint</id>
+            <name>Steve Siebert</name>
+            <email>steven.siebert@t-3-solutions.com</email>
+            <roles>
+                <role>Architect</role>
+                <role>Lead Developer</role>
+            </roles>
+            <organization>T-3 Solutions, LLC</organization>
+        </developer>
+    </developers>
+    <contributors>
+        <contributor>
+            <name>John Walters</name>
+            <email>john.d.walters2.civ@mail.mil</email>
+            <organization>Army/G2 GEOINT Enterprise TPED Services (GETS)</organization>
+            <roles>
+                <role>Program Manager</role>
+            </roles>
+        </contributor>
+    </contributors>
+    <organization>
+        <name>Army/G2 GEOINT Enterprise TPED Services (GETS)</name>
+        <url>https://gets.geoint.org</url>
+    </organization>
+    
+    
+  
+    <dependencies>
+        <dependency>
+            <groupId>org.jscience</groupId>
+            <artifactId>jscience</artifactId>
+            <version>4.3.1</version>
+        </dependency>
+        
+        <!-- test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+</project>

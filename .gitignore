@@ -1,0 +1,17 @@
+# maven
+/target/
+
+#netbeans
+nb-configuration.xml
+nbproject/private/
+nbactions.xml
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# IDEA
+*.iml
+*.ipr
+*.iws
