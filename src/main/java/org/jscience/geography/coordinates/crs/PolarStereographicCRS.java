@@ -26,7 +26,7 @@ package org.jscience.geography.coordinates.crs;
 import javax.measure.Measure;
 import javax.measure.converter.ConversionException;
 import javax.measure.unit.SI;
-import gov.ic.geoint.jeotrans.coordinate.PolarStereographic;
+import org.geoint.jeotrans.coordinate.PolarStereographic;
 import org.jscience.geography.coordinates.crs.CoordinateReferenceSystem.AbsolutePosition;
 import org.opengis.referencing.cs.CoordinateSystem;
 
@@ -34,14 +34,14 @@ import org.opengis.referencing.cs.CoordinateSystem;
  *
  * @author Steve Siebert
  */
-public class PolarStereographicCRS extends ProjectedCRS<PolarStereographic> {
+public final class PolarStereographicCRS extends ProjectedCRS<PolarStereographic> {
 
     private final static double PI_OVER_2 = (Math.PI / 2.0);
     private final static double TWO_PI = (2.0 * Math.PI);
     private final static double PI_OVER_4 = (Math.PI / 4.0);
 
     /* Ellipsoid Parameters, default to WGS 84  */
-    /* Semi-major axis of ellipsoid in meters  */
+ /* Semi-major axis of ellipsoid in meters  */
     private double polarA = 6378137.0;
     /* Flattening of ellipsoid  */
     private double polarF = 1 / 298.257223563;
@@ -59,7 +59,7 @@ public class PolarStereographicCRS extends ProjectedCRS<PolarStereographic> {
     private double twoPolarA = 12756274.0;
 
     /* Polar Stereographic projection Parameters */
-    /* Latitude of origin in radians */
+ /* Latitude of origin in radians */
     private double polarOriginLat = ((Math.PI * 90) / 180);
     /* Longitude of origin in radians */
     private double polarOriginLong = 0.0;
@@ -78,8 +78,8 @@ public class PolarStereographicCRS extends ProjectedCRS<PolarStereographic> {
     /**
      * Constructor.
      *
-     * Set the ellipsoid parameters and Polar Stereograpic projection
-     * parameters as inputs, and sets the corresponding state variables.
+     * Set the ellipsoid parameters and Polar Stereograpic projection parameters
+     * as inputs, and sets the corresponding state variables.
      *
      * @param a Semi-major axis of ellipsoid, in meters
      * @param f Flattening of ellipsoid
@@ -100,19 +100,23 @@ public class PolarStereographicCRS extends ProjectedCRS<PolarStereographic> {
         double inv_f = 1 / f;
         double mc;
 
-        if (a <= 0.0) { /* Semi-major axis must be greater than zero */
+        if (a <= 0.0) {
+            /* Semi-major axis must be greater than zero */
             throw new ConversionException("Semi-major axis less than "
                     + "or equal to zero");
         }
-        if ((inv_f < 250) || (inv_f > 350)) { /* Inverse flattening must be between 250 and 350 */
+        if ((inv_f < 250) || (inv_f > 350)) {
+            /* Inverse flattening must be between 250 and 350 */
             throw new ConversionException("Inverse flattening outside of "
                     + "valid range (250 to 350)");
         }
-        if ((latitudeScale < -PI_OVER_2) || (latitudeScale > PI_OVER_2)) { /* Origin Latitude out of range */
+        if ((latitudeScale < -PI_OVER_2) || (latitudeScale > PI_OVER_2)) {
+            /* Origin Latitude out of range */
             throw new ConversionException("Latitude of true scale outside "
                     + "of valid range (-90 to 90 degrees)");
         }
-        if ((longitudeFromPole < -Math.PI) || (longitudeFromPole > TWO_PI)) { /* Origin Longitude out of range */
+        if ((longitudeFromPole < -Math.PI) || (longitudeFromPole > TWO_PI)) {
+            /* Origin Longitude out of range */
             throw new ConversionException("Longitude down from pole "
                     + "outside of valid range (-180 to 360 degrees)");
         }
@@ -192,19 +196,23 @@ public class PolarStereographicCRS extends ProjectedCRS<PolarStereographic> {
         double latitude = ap.latitudeWGS84.doubleValue(SI.RADIAN);
         double longitude = ap.longitudeWGS84.doubleValue(SI.RADIAN);
 
-        if ((latitude < -PI_OVER_2) || (latitude > PI_OVER_2)) {   /* Latitude out of range */
+        if ((latitude < -PI_OVER_2) || (latitude > PI_OVER_2)) {
+            /* Latitude out of range */
             throw new ConversionException("Latitude outside of valid "
                     + "range (-90 to 90 degrees)");
         }
-        if ((latitude < 0) && (southernHemisphere == 0)) {   /* Latitude and Origin Latitude in different hemispheres */
+        if ((latitude < 0) && (southernHemisphere == 0)) {
+            /* Latitude and Origin Latitude in different hemispheres */
             throw new ConversionException("Latitude outside of valid "
                     + "range (-90 to 90 degrees)");
         }
-        if ((latitude > 0) && (southernHemisphere == 1)) {   /* Latitude and Origin Latitude in different hemispheres */
+        if ((latitude > 0) && (southernHemisphere == 1)) {
+            /* Latitude and Origin Latitude in different hemispheres */
             throw new ConversionException("Latitude outside of valid "
                     + "range (-90 to 90 degrees)");
         }
-        if ((longitude < -Math.PI) || (longitude > TWO_PI)) {  /* Longitude out of range */
+        if ((longitude < -Math.PI) || (longitude > TWO_PI)) {
+            /* Longitude out of range */
             throw new ConversionException("Longitude outside of valid "
                     + "range (-180 to 360 degrees)");
         }
@@ -244,23 +252,24 @@ public class PolarStereographicCRS extends ProjectedCRS<PolarStereographic> {
             }
 
         }
-        PolarStereographic ps =
-                PolarStereographic.valueOf(easting, northing, SI.METER, this);
+        PolarStereographic ps
+                = PolarStereographic.valueOf(easting, northing, SI.METER, this);
         return ps;
     }
 
     /**
      * Convert Polar Stereographic to geodetic
-     * 
-     * @param c
+     *
+     * @param ps
      * @param ap
      * @return
      */
     @Override
     protected AbsolutePosition positionOf(PolarStereographic ps,
             AbsolutePosition ap) {
-        double dy = 0, dx = 0;
-        double rho = 0;
+        double dy;
+        double dx;
+        double rho;
         double t;
         double PHI, sin_PHI;
         double tempPHI = 0.0;
@@ -275,11 +284,13 @@ public class PolarStereographicCRS extends ProjectedCRS<PolarStereographic> {
         double northing = ps.northingValue(SI.METER);
         double latitude, longitude;
 
-        if (easting > max_easting || easting < min_easting) { /* Easting out of range */
+        if (easting > max_easting || easting < min_easting) {
+            /* Easting out of range */
             throw new ConversionException("Easting outside of valid range, "
                     + "depending on ellipsoid and projection parameters");
         }
-        if (northing > max_northing || northing < min_northing) { /* Northing out of range */
+        if (northing > max_northing || northing < min_northing) {
+            /* Northing out of range */
             throw new ConversionException("Northing outside of valid "
                     + "range, depending on ellipsoid and projection parameters");
         }
@@ -292,7 +303,8 @@ public class PolarStereographicCRS extends ProjectedCRS<PolarStereographic> {
 
         delta_radius = Math.sqrt(polarDeltaEasting * polarDeltaEasting + polarDeltaNorthing * polarDeltaNorthing);
 
-        if (rho > delta_radius) { /* Point is outside of projection area */
+        if (rho > delta_radius) {
+            /* Point is outside of projection area */
             throw new ConversionException("Coordinates too far from pole, "
                     + "depending on ellipsoid and projection parameters");
         }
@@ -329,7 +341,6 @@ public class PolarStereographicCRS extends ProjectedCRS<PolarStereographic> {
                 longitude += TWO_PI;
             }
 
-
             if (latitude > PI_OVER_2) /* force distorted values to 90, -90 degrees */ {
                 latitude = PI_OVER_2;
             } else if (latitude < -PI_OVER_2) {
@@ -357,7 +368,7 @@ public class PolarStereographicCRS extends ProjectedCRS<PolarStereographic> {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    private final double polarPow(double EsSin) {
+    private double polarPow(double EsSin) {
         return Math.pow((1.0 - EsSin) / (1.0 + EsSin), esOver2);
     }
 }

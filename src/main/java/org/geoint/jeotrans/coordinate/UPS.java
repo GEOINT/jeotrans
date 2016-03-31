@@ -21,7 +21,7 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
  */
-package gov.ic.geoint.jeotrans.coordinate;
+package org.geoint.jeotrans.coordinate;
 
 import javax.measure.converter.UnitConverter;
 import javax.measure.quantity.Length;
@@ -30,7 +30,7 @@ import javax.measure.unit.Unit;
 import javolution.text.Text;
 import org.jscience.geography.coordinates.Coordinates;
 import org.jscience.geography.coordinates.LatLong;
-import gov.ic.geoint.jeotrans.util.ConversionUtil;
+import org.geoint.jeotrans.util.ConversionUtil;
 import org.jscience.geography.coordinates.crs.CoordinatesConverter;
 import org.jscience.geography.coordinates.crs.ProjectedCRS;
 import org.jscience.geography.coordinates.crs.UpsCRS;
@@ -38,13 +38,12 @@ import org.jscience.geography.coordinates.crs.UpsCRS;
 /**
  * Universal Polar Stereographic projection coordinate
  *
- * NOTE ABOUT PERSISTENCE
- * ----------------------
- * The non-geodetic classs are designed for conversion/presentation of
- * geodetic coordinates and not intented to be serialized or persisted.
- * The intent is to store all coordinates in geodetic form and convert to
- * other forms (projected, geocentric, etc) as needed.
- * 
+ * NOTE ABOUT PERSISTENCE ---------------------- The non-geodetic classs are
+ * designed for conversion/presentation of geodetic coordinates and not intented
+ * to be serialized or persisted. The intent is to store all coordinates in
+ * geodetic form and convert to other forms (projected, geocentric, etc) as
+ * needed.
+ *
  * @author Steve Siebert
  */
 public final class UPS extends Coordinates<ProjectedCRS<?>> {
@@ -67,15 +66,15 @@ public final class UPS extends Coordinates<ProjectedCRS<?>> {
     /**
      * default CRS, used for most projections, so caching it here
      */
-    private static final UpsCRS DEFAULT_CRS =
-            new UpsCRS();
+    private static final UpsCRS DEFAULT_CRS
+            = new UpsCRS();
     /**
      * the CRS used to generate this projection
      */
     private UpsCRS CRS;
 
     private static final int MAX_PRECISION = 3;
-    
+
     private UPS() {
     }
 
@@ -117,14 +116,11 @@ public final class UPS extends Coordinates<ProjectedCRS<?>> {
      * @param precision
      * @return
      */
-    public double northingValue(Unit<Length> unit, int precision)
-    {
-        if (precision > MAX_PRECISION)
-        {
+    public double northingValue(Unit<Length> unit, int precision) {
+        if (precision > MAX_PRECISION) {
             precision = MAX_PRECISION;
         }
-        if (precision < 0)
-        {
+        if (precision < 0) {
             precision = 0;
         }
 
@@ -139,14 +135,11 @@ public final class UPS extends Coordinates<ProjectedCRS<?>> {
      * @param precision
      * @return
      */
-    public double eastingValue (Unit<Length> unit, int precision)
-    {
-        if (precision > MAX_PRECISION)
-        {
+    public double eastingValue(Unit<Length> unit, int precision) {
+        if (precision > MAX_PRECISION) {
             precision = MAX_PRECISION;
         }
-        if (precision < 0)
-        {
+        if (precision < 0) {
             precision = 0;
         }
         return ConversionUtil.roundHalfUp(eastingValue(unit), precision);
@@ -167,7 +160,7 @@ public final class UPS extends Coordinates<ProjectedCRS<?>> {
      * @return
      */
     public boolean isNorthernHemisphere() {
-        return (hemisphere == HEMISPHERE_NORTH) ? true : false;
+        return (hemisphere == HEMISPHERE_NORTH);
     }
 
     /**
@@ -176,7 +169,7 @@ public final class UPS extends Coordinates<ProjectedCRS<?>> {
      * @return
      */
     public boolean isSouthernHemisphere() {
-        return (hemisphere == HEMISPHERE_SOUTH) ? true : false;
+        return (hemisphere == HEMISPHERE_SOUTH);
     }
 
     @Override
@@ -191,14 +184,15 @@ public final class UPS extends Coordinates<ProjectedCRS<?>> {
 
     @Override
     public double getOrdinate(int dimension) throws IndexOutOfBoundsException {
-        if (dimension == 1) {
-            Unit<?> u = ProjectedCRS.EASTING_NORTHING_CS.getAxis(0).getUnit();
-            return SI.METER.getConverterTo(u).convert(easting);
-        } else if (dimension == 1) {
-            Unit<?> u = ProjectedCRS.EASTING_NORTHING_CS.getAxis(1).getUnit();
-            return SI.METER.getConverterTo(u).convert(northing);
-        } else {
-            throw new IndexOutOfBoundsException();
+        switch (dimension) {
+            case 0:
+                Unit<?> u0 = ProjectedCRS.EASTING_NORTHING_CS.getAxis(0).getUnit();
+                return SI.METER.getConverterTo(u0).convert(easting);
+            case 1:
+                Unit<?> u1 = ProjectedCRS.EASTING_NORTHING_CS.getAxis(1).getUnit();
+                return SI.METER.getConverterTo(u1).convert(northing);
+            default:
+                throw new IndexOutOfBoundsException();
         }
     }
 
@@ -238,8 +232,8 @@ public final class UPS extends Coordinates<ProjectedCRS<?>> {
     }
 
     /**
-     * Create a UPS coordinate instance from component values with alternate
-     * CRS parameters
+     * Create a UPS coordinate instance from component values with alternate CRS
+     * parameters
      *
      * @param easting
      * @param northing
@@ -262,14 +256,14 @@ public final class UPS extends Coordinates<ProjectedCRS<?>> {
      * @return
      */
     public static UPS latLongToUps(LatLong latLong) {
-        CoordinatesConverter<LatLong, UPS> latLongToUps =
-                LatLong.CRS.getConverterTo(UPS.DEFAULT_CRS);
+        CoordinatesConverter<LatLong, UPS> latLongToUps
+                = LatLong.CRS.getConverterTo(UPS.DEFAULT_CRS);
         return latLongToUps.convert(latLong);
     }
 
     /**
-     * Convenience method to convert geodetic to UPS using alternate
-     * CRS parameters
+     * Convenience method to convert geodetic to UPS using alternate CRS
+     * parameters
      *
      * @param latLong
      * @param semiMajor
@@ -279,8 +273,8 @@ public final class UPS extends Coordinates<ProjectedCRS<?>> {
     public static UPS latLongToUps(LatLong latLong, double semiMajor,
             double flattening) {
         UpsCRS crs = new UpsCRS(semiMajor, flattening);
-        CoordinatesConverter<LatLong, UPS> latLongToUps =
-                LatLong.CRS.getConverterTo(crs);
+        CoordinatesConverter<LatLong, UPS> latLongToUps
+                = LatLong.CRS.getConverterTo(crs);
         return latLongToUps.convert(latLong);
     }
 
@@ -291,8 +285,8 @@ public final class UPS extends Coordinates<ProjectedCRS<?>> {
      * @return
      */
     public static LatLong upsToLatLong(UPS ups) {
-        CoordinatesConverter<UPS, LatLong> upsToLatLong =
-                UPS.DEFAULT_CRS.getConverterTo(LatLong.CRS);
+        CoordinatesConverter<UPS, LatLong> upsToLatLong
+                = UPS.DEFAULT_CRS.getConverterTo(LatLong.CRS);
         return upsToLatLong.convert(ups);
     }
 
@@ -307,38 +301,40 @@ public final class UPS extends Coordinates<ProjectedCRS<?>> {
      */
     public static LatLong upsToLatLong(UPS ups, double semiMajor, double flattening) {
         UpsCRS crs = new UpsCRS(semiMajor, flattening);
-        CoordinatesConverter<UPS, LatLong> upsToLatLong =
-                crs.getConverterTo(LatLong.CRS);
+        CoordinatesConverter<UPS, LatLong> upsToLatLong
+                = crs.getConverterTo(LatLong.CRS);
         return upsToLatLong.convert(ups);
     }
 
     /**
      * Default UPS output format
      *
-     * Example: 1234.123 1234.123N or 1234.123 1234.123S (north/south hemisphere)
+     * Example: 1234.123 1234.123N or 1234.123 1234.123S (north/south
+     * hemisphere)
+     *
      * @return
      */
     @Override
-    public Text toText ()
-    {
-        return new Text(eastingValue(SI.METER, MAX_PRECISION)+" "+northingValue(SI.METER, MAX_PRECISION)+hemisphere);
+    public Text toText() {
+        return new Text(asString());
+    }
+
+    String asString() {
+        return String.format("%f %f%s",
+                eastingValue(SI.METER, MAX_PRECISION),
+                northingValue(SI.METER, MAX_PRECISION),
+                hemisphere);
     }
 
     @Override
-    public boolean equals (Object o)
-    {
-        if (!(o instanceof UPS))
-        {
+    public boolean equals(Object o) {
+        if (!(o instanceof UPS)) {
             return false;
         }
         UPS ups = (UPS) o;
-        if (ups.eastingValue(SI.METER, MAX_PRECISION) == eastingValue(SI.METER, MAX_PRECISION) &&
-                ups.northingValue(SI.METER, MAX_PRECISION) == northingValue(SI.METER, MAX_PRECISION) &&
-                ups.getHemisphere() == hemisphere)
-        {
-            return true;
-        }
-        return false;
+        return ups.eastingValue(SI.METER, MAX_PRECISION) == eastingValue(SI.METER, MAX_PRECISION)
+                && ups.northingValue(SI.METER, MAX_PRECISION) == northingValue(SI.METER, MAX_PRECISION)
+                && ups.getHemisphere() == hemisphere;
     }
 
     @Override

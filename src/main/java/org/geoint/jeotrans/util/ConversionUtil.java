@@ -21,8 +21,7 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
  */
-
-package gov.ic.geoint.jeotrans.util;
+package org.geoint.jeotrans.util;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -40,30 +39,27 @@ import org.jscience.geography.coordinates.LatLong;
  */
 public class ConversionUtil {
 
-    static private double NORTH_POLAR_MIN = 84.0;
-    static private double SOUTH_POLAR_MIN = -80.0;
+    private static final double NORTH_POLAR_MIN = 84.0;
+    private static final double SOUTH_POLAR_MIN = -80.0;
 
     /**
-     * Convert latitude value to latitude zone character.  This methods
-     * expects the latitude to be non-polar
-     * 
+     * Convert latitude value to latitude zone character. This methods expects
+     * the latitude to be non-polar
+     *
      * @param latitude
      * @param unit
      * @return
      */
-    public static char getLatitudeZone (double latitude, Unit<Angle> unit)
-    {
-        if (unit != NonSI.DEGREE_ANGLE)
-        {
+    public static char getLatitudeZone(double latitude, Unit<Angle> unit) {
+        if (unit != NonSI.DEGREE_ANGLE) {
             UnitConverter toDegree = unit.getConverterTo(NonSI.DEGREE_ANGLE);
             latitude = toDegree.convert(latitude);
         }
         int degreesLatitude = (int) latitude;
-        if (degreesLatitude > NORTH_POLAR_MIN || degreesLatitude < SOUTH_POLAR_MIN)
-        {
-            throw new ConversionException("Unable to determine latitude" +
-                    " zone, polar regions require longitude value to " +
-                    "determine code.");
+        if (degreesLatitude > NORTH_POLAR_MIN || degreesLatitude < SOUTH_POLAR_MIN) {
+            throw new ConversionException("Unable to determine latitude"
+                    + " zone, polar regions require longitude value to "
+                    + "determine code.");
         }
         char zone = (char) ((degreesLatitude + 80) / 8 + 'C');
         if (zone > 'H') {
@@ -79,7 +75,8 @@ public class ConversionUtil {
     }
 
     /**
-     * Returns the UTM/UPS latitude zone identifier for the specified coordinates.
+     * Returns the UTM/UPS latitude zone identifier for the specified
+     * coordinates.
      *
      * @param latLong The coordinates.
      * @return the latitude zone character.
@@ -103,8 +100,8 @@ public class ConversionUtil {
     }
 
     /**
-     * Returns true if the position indicated by the coordinates is
-     * north of the northern limit of the UTM grid (84 degrees).
+     * Returns true if the position indicated by the coordinates is north of the
+     * northern limit of the UTM grid (84 degrees).
      *
      * @param latLong The coordinates.
      * @return True if the latitude is greater than 84 degrees.
@@ -114,8 +111,8 @@ public class ConversionUtil {
     }
 
     /**
-     * Returns true if the position indicated by the coordinates is
-     * south of the southern limit of the UTM grid (-80 degrees).
+     * Returns true if the position indicated by the coordinates is south of the
+     * southern limit of the UTM grid (-80 degrees).
      *
      * @param latLong The coordinates.
      * @return True if the latitude is less than -80 degrees.
@@ -125,7 +122,8 @@ public class ConversionUtil {
     }
 
     /**
-     * Decimal scale rounding - always round half up (0-4 rounds down, 5-9 rounds up)
+     * Decimal scale rounding - always round half up (0-4 rounds down, 5-9
+     * rounds up)
      *
      * @param decdeg
      * @param scale
@@ -136,7 +134,8 @@ public class ConversionUtil {
     }
 
     /**
-     * Round a decimal to an int - always round half up (0-4 rounds down, 5-9 rounds up)
+     * Round a decimal to an int - always round half up (0-4 rounds down, 5-9
+     * rounds up)
      *
      * NOTE: I didn't use Math.round() because it rounds down on .50
      *

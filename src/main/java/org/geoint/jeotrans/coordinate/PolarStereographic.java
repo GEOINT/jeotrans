@@ -21,8 +21,7 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
  */
-
-package gov.ic.geoint.jeotrans.coordinate;
+package org.geoint.jeotrans.coordinate;
 
 import javax.measure.converter.UnitConverter;
 import javax.measure.quantity.Length;
@@ -31,7 +30,7 @@ import javax.measure.unit.Unit;
 import javolution.text.Text;
 import org.jscience.geography.coordinates.Coordinates;
 import org.jscience.geography.coordinates.LatLong;
-import gov.ic.geoint.jeotrans.util.ConversionUtil;
+import org.geoint.jeotrans.util.ConversionUtil;
 import org.jscience.geography.coordinates.crs.CoordinatesConverter;
 import org.jscience.geography.coordinates.crs.PolarStereographicCRS;
 import org.jscience.geography.coordinates.crs.ProjectedCRS;
@@ -39,30 +38,27 @@ import org.jscience.geography.coordinates.crs.ProjectedCRS;
 /**
  * Polar Stereographic projection coordinate
  *
- * NOTE ABOUT PERSISTENCE
- * ----------------------
- * The non-geodetic classs are designed for conversion/presentation of
- * geodetic coordinates and not intented to be serialized or persisted.
- * The intent is to store all coordinates in geodetic form and convert to
- * other forms (projected, geocentric, etc) as needed.
- * 
+ * NOTE ABOUT PERSISTENCE ---------------------- The non-geodetic classs are
+ * designed for conversion/presentation of geodetic coordinates and not intented
+ * to be serialized or persisted. The intent is to store all coordinates in
+ * geodetic form and convert to other forms (projected, geocentric, etc) as
+ * needed.
+ *
  * @author Steve Siebert
  */
-public final class PolarStereographic extends Coordinates<ProjectedCRS<?>>
-{
+public final class PolarStereographic extends Coordinates<ProjectedCRS<?>> {
 
     private double northing;
     private double easting;
-    private static PolarStereographicCRS DEFAULT_CRS =
-            new PolarStereographicCRS();
+    private static final PolarStereographicCRS DEFAULT_CRS
+            = new PolarStereographicCRS();
     private PolarStereographicCRS CRS;
 
     private static final int MAX_PRECISION = 3;
 
     @Override
     public PolarStereographicCRS getCoordinateReferenceSystem() {
-        if (CRS == null)
-        {
+        if (CRS == null) {
             CRS = DEFAULT_CRS;
         }
         return CRS;
@@ -76,8 +72,6 @@ public final class PolarStereographic extends Coordinates<ProjectedCRS<?>>
         this.northing = northing;
     }
 
-
-
     /**
      * Return the northing value in requested unit
      *
@@ -85,8 +79,8 @@ public final class PolarStereographic extends Coordinates<ProjectedCRS<?>>
      * @return
      */
     public double northingValue(Unit<Length> unit) {
-        return unit.equals(SI.METER) ? northing :
-            SI.METER.getConverterTo(unit).convert(northing);
+        return unit.equals(SI.METER) ? northing
+                : SI.METER.getConverterTo(unit).convert(northing);
     }
 
     /**
@@ -96,8 +90,8 @@ public final class PolarStereographic extends Coordinates<ProjectedCRS<?>>
      * @return
      */
     public double eastingValue(Unit<Length> unit) {
-        return unit.equals(SI.METER) ? easting :
-            SI.METER.getConverterTo(unit).convert(easting);
+        return unit.equals(SI.METER) ? easting
+                : SI.METER.getConverterTo(unit).convert(easting);
     }
 
     /**
@@ -108,35 +102,28 @@ public final class PolarStereographic extends Coordinates<ProjectedCRS<?>>
      * @param precision
      * @return
      */
-    public double northingValue (Unit<Length> unit, int precision)
-    {
-        if (precision > MAX_PRECISION)
-        {
+    public double northingValue(Unit<Length> unit, int precision) {
+        if (precision > MAX_PRECISION) {
             precision = MAX_PRECISION;
         }
-        if (precision < 0)
-        {
+        if (precision < 0) {
             precision = 0;
         }
-        return ConversionUtil.roundHalfUp(northingValue(unit),  precision);
+        return ConversionUtil.roundHalfUp(northingValue(unit), precision);
     }
 
     /**
-     * Return the easting value in the requested unit with the requested
-     * decimal precision
+     * Return the easting value in the requested unit with the requested decimal
+     * precision
      *
      * @param unit
-     * @param percision
+     * @param precision
      * @return
      */
-    public double eastingValue (Unit<Length> unit, int precision)
-    {
-        if (precision > MAX_PRECISION)
-        {
+    public double eastingValue(Unit<Length> unit, int precision) {
+        if (precision > MAX_PRECISION) {
             precision = MAX_PRECISION;
-        }
-        if (precision < 0)
-        {
+        } else if (precision < 0) {
             precision = 0;
         }
         return ConversionUtil.roundHalfUp(eastingValue(unit), precision);
@@ -149,14 +136,15 @@ public final class PolarStereographic extends Coordinates<ProjectedCRS<?>>
 
     @Override
     public double getOrdinate(int dimension) throws IndexOutOfBoundsException {
-        if (dimension == 1) {
-            Unit<?> u = ProjectedCRS.EASTING_NORTHING_CS.getAxis(0).getUnit();
-            return SI.METER.getConverterTo(u).convert(easting);
-        } else if (dimension == 1) {
-            Unit<?> u = ProjectedCRS.EASTING_NORTHING_CS.getAxis(1).getUnit();
-            return SI.METER.getConverterTo(u).convert(northing);
-        } else {
-            throw new IndexOutOfBoundsException();
+        switch (dimension) {
+            case 0:
+                Unit<?> u0 = ProjectedCRS.EASTING_NORTHING_CS.getAxis(0).getUnit();
+                return SI.METER.getConverterTo(u0).convert(easting);
+            case 1:
+                Unit<?> u1 = ProjectedCRS.EASTING_NORTHING_CS.getAxis(1).getUnit();
+                return SI.METER.getConverterTo(u1).convert(northing);
+            default:
+                throw new IndexOutOfBoundsException();
         }
     }
 
@@ -178,9 +166,8 @@ public final class PolarStereographic extends Coordinates<ProjectedCRS<?>>
      * @param unit
      * @return
      */
-    public static PolarStereographic valueOf (double easting, double northing,
-            Unit<Length> unit)
-    {
+    public static PolarStereographic valueOf(double easting, double northing,
+            Unit<Length> unit) {
         PolarStereographic ps = new PolarStereographic();
         if (unit == SI.METER) {
             ps.setEasting(easting);
@@ -202,9 +189,8 @@ public final class PolarStereographic extends Coordinates<ProjectedCRS<?>>
      * @param crs
      * @return
      */
-    public static PolarStereographic valueOf (double easting, double northing,
-            Unit<Length> unit, PolarStereographicCRS crs)
-    {
+    public static PolarStereographic valueOf(double easting, double northing,
+            Unit<Length> unit, PolarStereographicCRS crs) {
         PolarStereographic ps = valueOf(easting, northing, unit);
         ps.CRS = crs;
         return ps;
@@ -216,10 +202,9 @@ public final class PolarStereographic extends Coordinates<ProjectedCRS<?>>
      * @param latLong
      * @return
      */
-    public static PolarStereographic latLongToPolarStereographic (LatLong latLong)
-    {
-        CoordinatesConverter<LatLong, PolarStereographic> latLongToPS =
-                LatLong.CRS.getConverterTo(DEFAULT_CRS);
+    public static PolarStereographic latLongToPolarStereographic(LatLong latLong) {
+        CoordinatesConverter<LatLong, PolarStereographic> latLongToPS
+                = LatLong.CRS.getConverterTo(DEFAULT_CRS);
         return latLongToPS.convert(latLong);
     }
 
@@ -227,8 +212,8 @@ public final class PolarStereographic extends Coordinates<ProjectedCRS<?>>
      * Convenience method to convert geodetic to Polar Stereographic with
      * alternate algorithm values
      *
-     * NOTE:  This should only be needed from within the jeotrans library
-     * 
+     * NOTE: This should only be needed from within the jeotrans library
+     *
      * @param latLong
      * @param a semiMaj
      * @param f flattening
@@ -238,15 +223,13 @@ public final class PolarStereographic extends Coordinates<ProjectedCRS<?>>
      * @param falseNorthing
      * @return
      */
-    public static PolarStereographic latLongToPolarStereographic (LatLong latLong,
+    public static PolarStereographic latLongToPolarStereographic(LatLong latLong,
             double a, double f, double latitudeScale, double longitudeFromPole,
-            double falseEasting, double falseNorthing)
-    {
-        PolarStereographicCRS crs = new PolarStereographicCRS
-                (a, f, latitudeScale, longitudeFromPole, falseEasting,
+            double falseEasting, double falseNorthing) {
+        PolarStereographicCRS crs = new PolarStereographicCRS(a, f, latitudeScale, longitudeFromPole, falseEasting,
                 falseNorthing);
-        CoordinatesConverter<LatLong, PolarStereographic> latLongToPS =
-                LatLong.CRS.getConverterTo(crs);
+        CoordinatesConverter<LatLong, PolarStereographic> latLongToPS
+                = LatLong.CRS.getConverterTo(crs);
         return latLongToPS.convert(latLong);
     }
 
@@ -256,17 +239,16 @@ public final class PolarStereographic extends Coordinates<ProjectedCRS<?>>
      * @param ps
      * @return
      */
-    public static LatLong polarStereographicToLatLong (PolarStereographic ps)
-    {
-        CoordinatesConverter<PolarStereographic, LatLong> psToLatLong =
-                PolarStereographic.DEFAULT_CRS.getConverterTo(LatLong.CRS);
+    public static LatLong polarStereographicToLatLong(PolarStereographic ps) {
+        CoordinatesConverter<PolarStereographic, LatLong> psToLatLong
+                = PolarStereographic.DEFAULT_CRS.getConverterTo(LatLong.CRS);
         return psToLatLong.convert(ps);
     }
 
     /**
      * Convenience method to convert polar stereographic to geodetic using
      * alternate CRS parameters
-     * 
+     *
      * @param ps
      * @param a semiMaj
      * @param f flattening
@@ -276,15 +258,13 @@ public final class PolarStereographic extends Coordinates<ProjectedCRS<?>>
      * @param falseNorthing
      * @return
      */
-    public static LatLong polarStereographicToLatLong (PolarStereographic ps,
+    public static LatLong polarStereographicToLatLong(PolarStereographic ps,
             double a, double f, double latitudeScale, double longitudeFromPole,
-            double falseEasting, double falseNorthing)
-    {
-        PolarStereographicCRS crs = new PolarStereographicCRS
-                (a, f, latitudeScale, longitudeFromPole, falseEasting,
+            double falseEasting, double falseNorthing) {
+        PolarStereographicCRS crs = new PolarStereographicCRS(a, f, latitudeScale, longitudeFromPole, falseEasting,
                 falseNorthing);
-        CoordinatesConverter<PolarStereographic, LatLong> psToLatLong =
-                crs.getConverterTo(LatLong.CRS);
+        CoordinatesConverter<PolarStereographic, LatLong> psToLatLong
+                = crs.getConverterTo(LatLong.CRS);
         return psToLatLong.convert(ps);
     }
 
@@ -292,28 +272,28 @@ public final class PolarStereographic extends Coordinates<ProjectedCRS<?>>
      * Default Polar Stereographic output
      *
      * Example: 01234.123m 01234.123m
+     *
      * @return
      */
     @Override
-    public Text toText ()
-    {
-        return new Text(eastingValue(SI.METER, MAX_PRECISION)+"m "+northingValue(SI.METER, MAX_PRECISION)+"m");
+    public Text toText() {
+        return new Text(asString());
+    }
+
+    public String asString() {
+        return String.format("%fm %fm",
+                eastingValue(SI.METER, MAX_PRECISION),
+                northingValue(SI.METER, MAX_PRECISION));
     }
 
     @Override
-    public boolean equals (Object o)
-    {
-        if (!(o instanceof PolarStereographic))
-        {
+    public boolean equals(Object o) {
+        if (!(o instanceof PolarStereographic)) {
             return false;
         }
         PolarStereographic ps = (PolarStereographic) o;
-        if (ps.eastingValue(SI.METER, MAX_PRECISION) == eastingValue(SI.METER, MAX_PRECISION) &&
-                ps.northingValue(SI.METER, MAX_PRECISION) == northingValue(SI.METER, MAX_PRECISION))
-        {
-            return true;
-        }
-        return false;
+        return ps.eastingValue(SI.METER, MAX_PRECISION) == eastingValue(SI.METER, MAX_PRECISION)
+                && ps.northingValue(SI.METER, MAX_PRECISION) == northingValue(SI.METER, MAX_PRECISION);
     }
 
     @Override

@@ -22,16 +22,16 @@
  *  THE SOFTWARE.
  */
 
-package gov.ic.geoint.jeotrans.coordinate;
+package org.geoint.jeotrans.coordinate;
 
-import gov.ic.geoint.jeotrans.coordinate.MGRS;
+import org.geoint.jeotrans.coordinate.MGRS;
 import java.util.ArrayList;
 import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 import org.jscience.geography.coordinates.LatLong;
-import gov.ic.geoint.jeotrans.util.ConversionUtil;
+import org.geoint.jeotrans.util.ConversionUtil;
 import org.jscience.geography.coordinates.crs.MgrsCRS;
 import org.jscience.geography.coordinates.crs.ProjectedCRS;
 import org.junit.AfterClass;

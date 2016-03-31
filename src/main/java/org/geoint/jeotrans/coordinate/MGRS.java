@@ -21,7 +21,7 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
  */
-package gov.ic.geoint.jeotrans.coordinate;
+package org.geoint.jeotrans.coordinate;
 
 import java.util.Arrays;
 import javax.measure.converter.UnitConverter;
@@ -32,7 +32,7 @@ import javolution.text.Text;
 import javolution.text.TextBuilder;
 import org.jscience.geography.coordinates.Coordinates;
 import org.jscience.geography.coordinates.LatLong;
-import gov.ic.geoint.jeotrans.util.ConversionUtil;
+import org.geoint.jeotrans.util.ConversionUtil;
 import org.jscience.geography.coordinates.crs.CoordinatesConverter;
 import org.jscience.geography.coordinates.crs.MgrsCRS;
 import org.jscience.geography.coordinates.crs.ProjectedCRS;
@@ -40,17 +40,15 @@ import org.jscience.geography.coordinates.crs.ProjectedCRS;
 /**
  * Military Grid Reference System projection coordinate
  *
- * NOTE ABOUT PERSISTENCE
- * ----------------------
- * The non-geodetic classs are designed for conversion/presentation of
- * geodetic coordinates and not intented to be serialized or persisted.
- * The intent is to store all coordinates in geodetic form and convert to
- * other forms (projected, geocentric, etc) as needed.
- * 
+ * NOTE ABOUT PERSISTENCE ---------------------- The non-geodetic classs are
+ * designed for conversion/presentation of geodetic coordinates and not intented
+ * to be serialized or persisted. The intent is to store all coordinates in
+ * geodetic form and convert to other forms (projected, geocentric, etc) as
+ * needed.
+ *
  * @author Steve Siebert
  */
-public final class MGRS extends Coordinates<ProjectedCRS<?>>
-{
+public final class MGRS extends Coordinates<ProjectedCRS<?>> {
 
     /**
      * northing in meters
@@ -77,8 +75,8 @@ public final class MGRS extends Coordinates<ProjectedCRS<?>>
     /**
      * default CRS, used for most projections, so caching it here
      */
-    private static final MgrsCRS DEFAULT_CRS =
-            new MgrsCRS();
+    private static final MgrsCRS DEFAULT_CRS
+            = new MgrsCRS();
     /**
      * the CRS used to generate this projection
      */
@@ -116,8 +114,8 @@ public final class MGRS extends Coordinates<ProjectedCRS<?>>
      * @return
      */
     public double northingValue(Unit<Length> unit) {
-        return unit.equals(SI.METER) ? northing :
-            SI.METER.getConverterTo(unit).convert(northing);
+        return unit.equals(SI.METER) ? northing
+                : SI.METER.getConverterTo(unit).convert(northing);
     }
 
     /**
@@ -127,8 +125,8 @@ public final class MGRS extends Coordinates<ProjectedCRS<?>>
      * @return
      */
     public double eastingValue(Unit<Length> unit) {
-        return unit.equals(SI.METER) ? easting :
-            SI.METER.getConverterTo(unit).convert(easting);
+        return unit.equals(SI.METER) ? easting
+                : SI.METER.getConverterTo(unit).convert(easting);
     }
 
     /**
@@ -139,14 +137,11 @@ public final class MGRS extends Coordinates<ProjectedCRS<?>>
      * @param precision
      * @return
      */
-    public double northingValue(Unit<Length> unit, int precision)
-    {
-        if (precision > MAX_PRECISION)
-        {
+    public double northingValue(Unit<Length> unit, int precision) {
+        if (precision > MAX_PRECISION) {
             precision = MAX_PRECISION;
         }
-        if (precision < 0)
-        {
+        if (precision < 0) {
             precision = 0;
         }
 
@@ -161,14 +156,11 @@ public final class MGRS extends Coordinates<ProjectedCRS<?>>
      * @param precision
      * @return
      */
-    public double eastingValue (Unit<Length> unit, int precision)
-    {
-        if (precision > MAX_PRECISION)
-        {
+    public double eastingValue(Unit<Length> unit, int precision) {
+        if (precision > MAX_PRECISION) {
             precision = MAX_PRECISION;
         }
-        if (precision < 0)
-        {
+        if (precision < 0) {
             precision = 0;
         }
         return ConversionUtil.roundHalfUp(eastingValue(unit), precision);
@@ -186,28 +178,17 @@ public final class MGRS extends Coordinates<ProjectedCRS<?>>
         return utmZone;
     }
 
-    public boolean isNorthPolar ()
-    {
-        if (latitudeZone == 'Y' || latitudeZone == 'Z')
-        {
-            return true;
-        }
-        return false;
+    public boolean isNorthPolar() {
+        return latitudeZone == 'Y' || latitudeZone == 'Z';
     }
 
-    public boolean isSouthPolar()
-    {
-        if (latitudeZone == 'A' || latitudeZone == 'B')
-        {
-            return true;
-        }
-        return false;
+    public boolean isSouthPolar() {
+        return latitudeZone == 'A' || latitudeZone == 'B';
     }
 
     @Override
     public ProjectedCRS<?> getCoordinateReferenceSystem() {
-        if (CRS == null)
-        {
+        if (CRS == null) {
             CRS = DEFAULT_CRS;
         }
         return CRS;
@@ -220,21 +201,24 @@ public final class MGRS extends Coordinates<ProjectedCRS<?>>
 
     @Override
     public double getOrdinate(int dimension) throws IndexOutOfBoundsException {
-        if (dimension == 1) {
-            Unit<?> u = ProjectedCRS.EASTING_NORTHING_CS.getAxis(0).getUnit();
-            return SI.METER.getConverterTo(u).convert(easting);
-        } else if (dimension == 1) {
-            Unit<?> u = ProjectedCRS.EASTING_NORTHING_CS.getAxis(1).getUnit();
-            return SI.METER.getConverterTo(u).convert(northing);
-        } else {
-            throw new IndexOutOfBoundsException();
+        switch (dimension) {
+            case 0:
+                Unit<?> u0 = ProjectedCRS.EASTING_NORTHING_CS.getAxis(0).getUnit();
+                return SI.METER.getConverterTo(u0).convert(easting);
+
+            case 1:
+                Unit<?> u1 = ProjectedCRS.EASTING_NORTHING_CS.getAxis(1).getUnit();
+                return SI.METER.getConverterTo(u1).convert(northing);
+
+            default:
+                throw new IndexOutOfBoundsException();
         }
     }
 
     /**
      * Copy the MGRS state value to another MGRS object (different object
      * reference)
-     * 
+     *
      * @return
      */
     @Override
@@ -255,8 +239,7 @@ public final class MGRS extends Coordinates<ProjectedCRS<?>>
      * @return
      */
     public static MGRS valueOf(int longitudeZone, char latitudeZone,
-            char[] gridSquare, double easting, double northing, Unit<Length> unit)
-    {
+            char[] gridSquare, double easting, double northing, Unit<Length> unit) {
         MGRS mgrs = new MGRS();
         mgrs.setUtmZone(longitudeZone);
         mgrs.setLatitudeZone(latitudeZone);
@@ -275,7 +258,7 @@ public final class MGRS extends Coordinates<ProjectedCRS<?>>
 
     /**
      * Create MGRS instance from components and alternate CRS values
-     * 
+     *
      * @param longitudeZone
      * @param latitudeZone
      * @param gridSquare
@@ -287,8 +270,7 @@ public final class MGRS extends Coordinates<ProjectedCRS<?>>
      */
     public static MGRS valueOf(int longitudeZone, char latitudeZone,
             char[] gridSquare, double easting, double northing,
-            Unit<Length> unit, MgrsCRS crs)
-    {
+            Unit<Length> unit, MgrsCRS crs) {
         MGRS mgrs = valueOf(longitudeZone, latitudeZone, gridSquare, easting,
                 northing, unit);
         mgrs.CRS = crs;
@@ -301,23 +283,21 @@ public final class MGRS extends Coordinates<ProjectedCRS<?>>
      * @param mgrs
      * @return
      */
-    public static LatLong mgrsToLatLong (MGRS mgrs)
-    {
-        CoordinatesConverter<MGRS, LatLong> mgrsToLatLong =
-                MGRS.DEFAULT_CRS.getConverterTo(LatLong.CRS);
+    public static LatLong mgrsToLatLong(MGRS mgrs) {
+        CoordinatesConverter<MGRS, LatLong> mgrsToLatLong
+                = MGRS.DEFAULT_CRS.getConverterTo(LatLong.CRS);
         return mgrsToLatLong.convert(mgrs);
     }
 
     /**
      * Convenience method to convert LatLong to MGRS
-     * 
+     *
      * @param latLong
      * @return
      */
-    public static MGRS latLongToMgrs (LatLong latLong)
-    {
-        CoordinatesConverter<LatLong, MGRS> latLongToMgrs =
-                LatLong.CRS.getConverterTo(MGRS.DEFAULT_CRS);
+    public static MGRS latLongToMgrs(LatLong latLong) {
+        CoordinatesConverter<LatLong, MGRS> latLongToMgrs
+                = LatLong.CRS.getConverterTo(MGRS.DEFAULT_CRS);
         return latLongToMgrs.convert(latLong);
     }
 
@@ -325,44 +305,40 @@ public final class MGRS extends Coordinates<ProjectedCRS<?>>
      * Default text output for MGRS
      *
      * Example: A UW 00123 00123
-     * 
+     *
      * @return
      */
     @Override
-    public Text toText ()
-    {
-        TextBuilder tb = new TextBuilder();
-        if (utmZone != 0)
-        {
-            tb.append(utmZone);
+    public Text toText() {
+        return new Text(asString());
+    }
+
+    public String asString() {
+        StringBuilder sb = new StringBuilder();
+        if (utmZone != 0) {
+            sb.append(utmZone);
         }
-        tb.append(latitudeZone);
-        tb.append(" ");
-        tb.append(gridSquare);
-        tb.append(" ");
-        tb.append(String.format("%05d", (int) eastingValue(SI.METER, 0)));
-        tb.append(" ");
-        tb.append(String.format("%05d", (int) northingValue(SI.METER, 0)));
-        return tb.toText();
+        sb.append(latitudeZone)
+                .append(" ")
+                .append(gridSquare)
+                .append(" ")
+                .append(String.format("%05d", (int) eastingValue(SI.METER, 0)))
+                .append(" ")
+                .append(String.format("%05d", (int) northingValue(SI.METER, 0)));
+        return sb.toString();
     }
 
     @Override
-    public boolean equals (Object o)
-    {
-        if (!(o instanceof MGRS))
-        {
+    public boolean equals(Object o) {
+        if (!(o instanceof MGRS)) {
             return false;
         }
         MGRS mgrs = (MGRS) o;
-        if (mgrs.eastingValue(SI.METER, MAX_PRECISION) == eastingValue(SI.METER, MAX_PRECISION) &&
-                mgrs.northingValue(SI.METER, MAX_PRECISION) == northingValue(SI.METER, MAX_PRECISION) &&
-                mgrs.getLatitudeZone() == getLatitudeZone() &&
-                mgrs.getUtmZone() == getUtmZone() &&
-                Arrays.equals(mgrs.getGridSquare(), getGridSquare()))
-        {
-            return true;
-        }
-        return false;
+        return mgrs.eastingValue(SI.METER, MAX_PRECISION) == eastingValue(SI.METER, MAX_PRECISION)
+                && mgrs.northingValue(SI.METER, MAX_PRECISION) == northingValue(SI.METER, MAX_PRECISION)
+                && mgrs.getLatitudeZone() == getLatitudeZone()
+                && mgrs.getUtmZone() == getUtmZone()
+                && Arrays.equals(mgrs.getGridSquare(), getGridSquare());
     }
 
     @Override
@@ -375,5 +351,5 @@ public final class MGRS extends Coordinates<ProjectedCRS<?>>
         hash = 37 * hash + Arrays.hashCode(this.gridSquare);
         return hash;
     }
-    
+
 }

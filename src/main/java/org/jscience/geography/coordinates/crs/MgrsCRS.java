@@ -23,14 +23,14 @@
  */
 package org.jscience.geography.coordinates.crs;
 
-import gov.ic.geoint.jeotrans.util.ConversionUtil;
+import org.geoint.jeotrans.util.ConversionUtil;
 import javax.measure.Measure;
 import javax.measure.converter.ConversionException;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
-import gov.ic.geoint.jeotrans.coordinate.MGRS;
-import gov.ic.geoint.jeotrans.coordinate.UPS;
-import gov.ic.geoint.jeotrans.coordinate.UTM;
+import org.geoint.jeotrans.coordinate.MGRS;
+import org.geoint.jeotrans.coordinate.UPS;
+import org.geoint.jeotrans.coordinate.UTM;
 import org.jscience.geography.coordinates.LatLong;
 import org.jscience.geography.coordinates.crs.CoordinateReferenceSystem.AbsolutePosition;
 import org.opengis.referencing.cs.CoordinateSystem;
@@ -39,7 +39,7 @@ import org.opengis.referencing.cs.CoordinateSystem;
  *
  * @author Steve Siebert
  */
-public class MgrsCRS extends ProjectedCRS<MGRS> {
+public final class MgrsCRS extends ProjectedCRS<MGRS> {
 
     private static final double DEG_TO_RAD = 0.017453292519943295;
     /* NUMBER OF LETTERS IN MGRS              */
@@ -53,7 +53,7 @@ public class MgrsCRS extends ProjectedCRS<MGRS> {
     private static final int MIN_EAST_NORTH = 0;
     private static final int MAX_EAST_NORTH = 4000000;
     /* Ellipsoid parameters, default to WGS 84 */
-    /* Semi-major axis of ellipsoid in meters */
+ /* Semi-major axis of ellipsoid in meters */
     private double mgrsA = 6378137.0;
     /* Flattening of ellipsoid           */
     private double mgrsF = 1 / 298.257223563;
@@ -67,15 +67,15 @@ public class MgrsCRS extends ProjectedCRS<MGRS> {
     private static final String CLARKE_1866 = "CC";
     private static final String CLARKE_1880 = "CD";
     private static final String BESSEL_1841 = "BR";
-    private final static String BESSEL_1841_NAMIBIA = "BN";
-    private static final char[] alphabet = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
+    private static final String BESSEL_1841_NAMIBIA = "BN";
+    private static final char[] ALPHABET = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
         'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
         'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
     };
 
     /**
      * Constructor
-     * 
+     *
      */
     public MgrsCRS() {
     }
@@ -92,11 +92,13 @@ public class MgrsCRS extends ProjectedCRS<MGRS> {
     public MgrsCRS(double a, double f, String ellipsoidCode) {
         double inv_f = 1 / f;
 
-        if (a <= 0.0) { /* Semi-major axis must be greater than zero */
+        if (a <= 0.0) {
+            /* Semi-major axis must be greater than zero */
             throw new ConversionException("Semi-major axis less than or "
                     + "equal to zero");
         }
-        if ((inv_f < 250) || (inv_f > 350)) { /* Inverse flattening must be between 250 and 350 */
+        if ((inv_f < 250) || (inv_f > 350)) {
+            /* Inverse flattening must be between 250 and 350 */
             throw new ConversionException("Inverse flattening outside "
                     + "of valid range (250 to 350)");
         }
@@ -106,9 +108,9 @@ public class MgrsCRS extends ProjectedCRS<MGRS> {
     }
 
     /**
-     * Convert geodetic to MGRS, this is a two-step process requiring
-     * geodetic to UTM/UPS and finally UTM/UPS to MGRS
-     * 
+     * Convert geodetic to MGRS, this is a two-step process requiring geodetic
+     * to UTM/UPS and finally UTM/UPS to MGRS
+     *
      * @param ap
      * @return
      */
@@ -125,16 +127,15 @@ public class MgrsCRS extends ProjectedCRS<MGRS> {
             //convert to UTM
             UTM utm = UTM.latLongToUtm(latLong);
 
-
             return utmToMgrs(utm);
         }
     }
 
     /**
-     * Convert MGRS to geodetic, this is a two-step process requiring
-     * MGRS be converted to UTM/UPS and finally UTM/UPS to geodetic
-     * 
-     * @param c
+     * Convert MGRS to geodetic, this is a two-step process requiring MGRS be
+     * converted to UTM/UPS and finally UTM/UPS to geodetic
+     *
+     * @param mgrs
      * @param ap
      * @return
      */
@@ -175,7 +176,7 @@ public class MgrsCRS extends ProjectedCRS<MGRS> {
         /* Northing for 100,000 meter grid square     */
         double gridNorthing;
         char[] gridSquare = mgrs.getGridSquare();
-        double divisor = 1.0;
+        double divisor;
         char hemisphere;
         double easting = mgrs.eastingValue(SI.METER); //meters
         double northing = mgrs.northingValue(SI.METER); //meters
@@ -225,8 +226,7 @@ public class MgrsCRS extends ProjectedCRS<MGRS> {
                 row_letter_northing = row_letter_northing - TWOMIL;
             }
 
-            LETTER latBand = LETTER.valueOf(String.valueOf
-                    (alphabet[LETTER.valueOf(String.valueOf(mgrs.getLatitudeZone())).getIndex()]));
+            LETTER latBand = LETTER.valueOf(String.valueOf(ALPHABET[LETTER.valueOf(String.valueOf(mgrs.getLatitudeZone())).getIndex()]));
 
             gridNorthing = row_letter_northing - gridValues.getPatternOffset();
             if (gridNorthing < 0) {
@@ -244,7 +244,6 @@ public class MgrsCRS extends ProjectedCRS<MGRS> {
             UTM utm = UTM.valueOf(mgrs.getUtmZone(), mgrs.getLatitudeZone(), easting, northing, SI.METER);
 
             /* check that point is within Zone Letter bounds */
-
             LatLong latLong = UTM.utmToLatLong(utm, mgrsA, mgrsF, 0);
 
             divisor = Math.pow(10.0, MAX_PRECISION);
@@ -268,9 +267,12 @@ public class MgrsCRS extends ProjectedCRS<MGRS> {
      * @return
      */
     protected MGRS utmToMgrs(UTM utm) {
-        double gridEasting;        /* Easting used to derive 2nd letter of MGRS   */
-        double gridNorthing;       /* Northing used to derive 3rd letter of MGRS  */
-        int[] letters = new int[MGRS_LETTERS];  /* Number location of 3 letters in alphabet    */
+        double gridEasting;
+        /* Easting used to derive 2nd letter of MGRS   */
+        double gridNorthing;
+        /* Northing used to derive 3rd letter of MGRS  */
+        int[] letters = new int[MGRS_LETTERS];
+        /* Number location of 3 letters in alphabet    */
         double divisor;
         double rounded_easting;
 
@@ -278,7 +280,7 @@ public class MgrsCRS extends ProjectedCRS<MGRS> {
         double northing = utm.northingValue(SI.METER);
 
         LatLong latLong = UTM.utmToLatLong(utm);
-        
+
         double latitude = latLong.latitudeValue(NonSI.DEGREE_ANGLE);
         double longitude = latLong.longitudeValue(NonSI.DEGREE_ANGLE);
 
@@ -290,7 +292,8 @@ public class MgrsCRS extends ProjectedCRS<MGRS> {
                 && (((latitude >= 56.0)
                 && (latitude < 64.0))
                 && ((longitude >= 3.0)
-                || (rounded_easting >= 500000.0)))) { /* Reconvert to UTM zone 32 */
+                || (rounded_easting >= 500000.0)))) {
+            /* Reconvert to UTM zone 32 */
             utm = UTM.latLongToUtm(latLong, mgrsA, mgrsF, 32);
 
             /* Round easting value using new easting */
@@ -333,7 +336,8 @@ public class MgrsCRS extends ProjectedCRS<MGRS> {
         gridEasting = easting;
         if (((letters[0] == LETTER.V.getIndex()) && (utm.getUtmZone() == 31))
                 && (gridEasting == 500000.0)) {
-            gridEasting = gridEasting - 1.0; /* SUBTRACT 1 METER */
+            gridEasting = gridEasting - 1.0;
+            /* SUBTRACT 1 METER */
         }
 
         letters[1] = gridValues.getSecondLetterLowValue() + ((int) (gridEasting / ONEHT) - 1);
@@ -341,23 +345,23 @@ public class MgrsCRS extends ProjectedCRS<MGRS> {
             letters[1] = letters[1] + 1;
         }
 
-        char[] gridSquare = {alphabet[letters[1]], alphabet[letters[2]]};
+        char[] gridSquare = {ALPHABET[letters[1]], ALPHABET[letters[2]]};
 
         gridEasting = gridEasting % 100000.0;
         if (gridEasting >= 99999.5) {
             gridEasting = 99999.0;
         }
-        double east =  (gridEasting / divisor);
-        
+        double east = (gridEasting / divisor);
+
         gridEasting = east;
 
         northing = northing % 100000.0;
         if (northing >= 99999.5) {
             northing = 99999.0;
         }
-        double north =  (northing / divisor);
+        double north = (northing / divisor);
         northing = north;
-        return MGRS.valueOf(utm.getUtmZone(), alphabet[letters[0]], gridSquare, gridEasting, northing, SI.METER);
+        return MGRS.valueOf(utm.getUtmZone(), ALPHABET[letters[0]], gridSquare, gridEasting, northing, SI.METER);
     }
 
     /**
@@ -385,7 +389,6 @@ public class MgrsCRS extends ProjectedCRS<MGRS> {
         LETTER letter3 = LETTER.valueOf(String.valueOf(gridSquare[1]));
 
         //calculate northing
-
         double gridNorthing = letter3.getIndex() * 100000 + upsConst.getFalseNorthing();
         if (letter3.compareTo(LETTER.I) > 0) {
             gridNorthing -= 100000.0;
@@ -463,14 +466,12 @@ public class MgrsCRS extends ProjectedCRS<MGRS> {
                 letters[0] = LETTER.Y.getIndex();
                 upsConst = UPS_CONSTANT.Y;
             }
+        } else if (easting >= TWOMIL) {
+            letters[0] = LETTER.B.getIndex();
+            upsConst = UPS_CONSTANT.B;
         } else {
-            if (easting >= TWOMIL) {
-                letters[0] = LETTER.B.getIndex();
-                upsConst = UPS_CONSTANT.B;
-            } else {
-                letters[0] = LETTER.A.getIndex();
-                upsConst = UPS_CONSTANT.A;
-            }
+            letters[0] = LETTER.A.getIndex();
+            upsConst = UPS_CONSTANT.A;
         }
 
         double grid_northing = northing;
@@ -511,30 +512,30 @@ public class MgrsCRS extends ProjectedCRS<MGRS> {
             }
         }
 
-        char[] gridSquare = {alphabet[letters[1]], alphabet[letters[2]]};
+        char[] gridSquare = {ALPHABET[letters[1]], ALPHABET[letters[2]]};
 
         easting = easting % 100000.0;
 
         if (easting >= 99999.5) {
-        easting = 99999.0;
+            easting = 99999.0;
         }
         double east = (easting / divisor);
         easting = Double.valueOf(String.format("%" + MAX_PRECISION + "f", east).trim());
         northing = northing % 100000.0;
         if (northing >= 99999.5) {
-        northing = 99999.0;
+            northing = 99999.0;
         }
-        northing =  (northing / divisor);
+        northing = (northing / divisor);
 
-        return MGRS.valueOf(0, alphabet[letters[0]], gridSquare, easting, northing, SI.METER);
+        return MGRS.valueOf(0, ALPHABET[letters[0]], gridSquare, easting, northing, SI.METER);
     }
 
     /**
      * The GridValues encapulates the algorithm used to determine the letter
-     * range used for the 2nd letter in the MGRS coordinate string,
-     * based on the set  number of the utm zone. It also sets the pattern
-     * offset using a value of A for the second letter of the grid square,
-     * based on the grid pattern and set number of the utm zone.
+     * range used for the 2nd letter in the MGRS coordinate string, based on the
+     * set number of the utm zone. It also sets the pattern offset using a value
+     * of A for the second letter of the grid square, based on the grid pattern
+     * and set number of the utm zone.
      */
     private final class GridValues {
 
@@ -554,12 +555,8 @@ public class MgrsCRS extends ProjectedCRS<MGRS> {
                 setNum = 6;
             }
 
-            if (mgrsEllipsoidCode.matches(CLARKE_1866) || mgrsEllipsoidCode.matches(CLARKE_1880)
-                    || mgrsEllipsoidCode.matches(BESSEL_1841) || mgrsEllipsoidCode.matches(BESSEL_1841_NAMIBIA)) {
-                aaPattern = false;
-            } else {
-                aaPattern = true;
-            }
+            aaPattern = !(mgrsEllipsoidCode.matches(CLARKE_1866) || mgrsEllipsoidCode.matches(CLARKE_1880)
+                    || mgrsEllipsoidCode.matches(BESSEL_1841) || mgrsEllipsoidCode.matches(BESSEL_1841_NAMIBIA));
 
             switch (setNum) {
                 case 1:
@@ -589,12 +586,10 @@ public class MgrsCRS extends ProjectedCRS<MGRS> {
                 } else {
                     patternOffset = 0.0;
                 }
+            } else if ((setNum % 2) == 0) {
+                patternOffset = 1500000.0;
             } else {
-                if ((setNum % 2) == 0) {
-                    patternOffset = 1500000.0;
-                } else {
-                    patternOffset = 1000000.00;
-                }
+                patternOffset = 1000000.00;
             }
         }
 
@@ -693,9 +688,9 @@ enum LETTER {
     /**
      * returns the integer index for the number
      *
-     * currently we exploit the ordinal value of enumeration.  by proxying
-     * through this method, instead of directly using ordinal(), we provide
-     * a layer of abstraction to permit flexible refactoring as needed.
+     * currently we exploit the ordinal value of enumeration. by proxying
+     * through this method, instead of directly using ordinal(), we provide a
+     * layer of abstraction to permit flexible refactoring as needed.
      * Additionally, it keeps the vocabulary the same as is in geotrans
      *
      * @return
@@ -711,12 +706,12 @@ enum UPS_CONSTANT {
     B(LETTER.B.getIndex(), LETTER.A.getIndex(), LETTER.R.getIndex(), LETTER.Z.getIndex(), 2000000.0, 800000.0),
     Y(LETTER.Y.getIndex(), LETTER.J.getIndex(), LETTER.Z.getIndex(), LETTER.P.getIndex(), 800000.0, 1300000.0),
     Z(LETTER.Z.getIndex(), LETTER.A.getIndex(), LETTER.J.getIndex(), LETTER.P.getIndex(), 2000000.0, 1300000.0);
-    private int letter;
-    private int secondLetterLow;
-    private int secondLetterHigh;
-    private int thirdLetterHigh;
-    private double falseEasting;
-    private double falseNorthing;
+    private final int letter;
+    private final int secondLetterLow;
+    private final int secondLetterHigh;
+    private final int thirdLetterHigh;
+    private final double falseEasting;
+    private final double falseNorthing;
 
     private UPS_CONSTANT(int letter, int secondLetterLow, int secondLetterHigh, int thirdLetterHigh, double falseEasting, double falseNorthing) {
         this.letter = letter;

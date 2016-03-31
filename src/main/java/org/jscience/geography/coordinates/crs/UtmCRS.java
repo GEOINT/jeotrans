@@ -23,13 +23,12 @@
  */
 package org.jscience.geography.coordinates.crs;
 
-import gov.ic.geoint.jeotrans.util.ConversionUtil;
+import org.geoint.jeotrans.util.ConversionUtil;
 import javax.measure.Measure;
 import javax.measure.converter.ConversionException;
-import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
-import gov.ic.geoint.jeotrans.coordinate.TransverseMercator;
-import gov.ic.geoint.jeotrans.coordinate.UTM;
+import org.geoint.jeotrans.coordinate.TransverseMercator;
+import org.geoint.jeotrans.coordinate.UTM;
 import org.jscience.geography.coordinates.LatLong;
 import org.jscience.geography.coordinates.crs.CoordinateReferenceSystem.AbsolutePosition;
 import org.opengis.referencing.cs.CoordinateSystem;
@@ -38,8 +37,7 @@ import org.opengis.referencing.cs.CoordinateSystem;
  *
  * @author Steve Siebert
  */
-public class UtmCRS extends ProjectedCRS<UTM>
-{
+public final class UtmCRS extends ProjectedCRS<UTM> {
 
     private static final double MIN_LAT = ((-80.5 * Math.PI) / 180.0);
     private static final double MAX_LAT = ((84.5 * Math.PI) / 180.0);
@@ -74,20 +72,19 @@ public class UtmCRS extends ProjectedCRS<UTM>
 
         double invF = 1 / flattening;
 
-        if (semiMajor <= 0.0)
-        { /* Semi-major axis must be greater than zero */
-            throw new ConversionException("Semi-major axis less than or " +
-                    "equal to zero");
+        if (semiMajor <= 0.0) {
+            /* Semi-major axis must be greater than zero */
+            throw new ConversionException("Semi-major axis less than or "
+                    + "equal to zero");
         }
-        if ((invF < 250) || (invF > 350))
-        { /* Inverse flattening must be between 250 and 350 */
-            throw new ConversionException("Inverse flattening outside of " +
-                    "valid range (250 to 350)");
+        if ((invF < 250) || (invF > 350)) {
+            /* Inverse flattening must be between 250 and 350 */
+            throw new ConversionException("Inverse flattening outside of "
+                    + "valid range (250 to 350)");
         }
-        if ((override < 0) || (override > 60))
-        {
-            throw new ConversionException("Zone outside of valid range " +
-                    "(1 to 60) and within 1 of 'natural' zone");
+        if ((override < 0) || (override > 60)) {
+            throw new ConversionException("Zone outside of valid range "
+                    + "(1 to 60) and within 1 of 'natural' zone");
         }
 
         utmA = semiMajor;
@@ -110,19 +107,18 @@ public class UtmCRS extends ProjectedCRS<UTM>
         int longDegrees;
         int tempZone;
         double originLatitude = 0;
-        double centralMeridian = 0;
+        double centralMeridian;
         double falseEasting = 500000;
         double falseNorthing = 0;
         double scale = 0.9996;
 
-
-        if ((latitudeRadian < MIN_LAT) || (latitudeRadian > MAX_LAT))
-        { /* Latitude out of range */
+        if ((latitudeRadian < MIN_LAT) || (latitudeRadian > MAX_LAT)) {
+            /* Latitude out of range */
             throw new ConversionException("Latitude outside of valid "
                     + "range (-80.5 to 84.5 degrees)");
         }
-        if ((longitudeRadian < -Math.PI) || (longitudeRadian > (2 * Math.PI)))
-        { /* Longitude out of range */
+        if ((longitudeRadian < -Math.PI) || (longitudeRadian > (2 * Math.PI))) {
+            /* Longitude out of range */
             throw new ConversionException("Longitude outside of valid "
                     + "range (-180 to 360 degrees)");
         }
@@ -203,24 +199,22 @@ public class UtmCRS extends ProjectedCRS<UTM>
 
         LatLong latLong = LatLong.valueOf(latitudeRadian,
                 longitudeRadian, SI.RADIAN);
-        TransverseMercator tm =
-                TransverseMercator.latLongToTransverseMercator(latLong, utmA, 
-                utmF, originLatitude, centralMeridian, falseEasting,
-                falseNorthing, scale);
+        TransverseMercator tm
+                = TransverseMercator.latLongToTransverseMercator(latLong, utmA,
+                        utmF, originLatitude, centralMeridian, falseEasting,
+                        falseNorthing, scale);
         UTM utm = UTM.valueOf(tempZone, ConversionUtil.getLatitudeZone(latLong),
                 tm.eastingValue(SI.METER), tm.northingValue(SI.METER), SI.METER);
 
         double easting = utm.eastingValue(SI.METER);
         double northing = utm.northingValue(SI.METER);
-        if (easting < MIN_EASTING || easting > MAX_EASTING)
-        {
-            throw new ConversionException("Easting outside of valid range " +
-                    "(100,000 to 900,000 meters)");
+        if (easting < MIN_EASTING || easting > MAX_EASTING) {
+            throw new ConversionException("Easting outside of valid range "
+                    + "(100,000 to 900,000 meters)");
         }
-        if (northing < MIN_NORTHING || northing > MAX_NORTHING)
-        {
-            throw new ConversionException("Northing outside of valid range " +
-                    "(0 to 10,000,000 meters)");
+        if (northing < MIN_NORTHING || northing > MAX_NORTHING) {
+            throw new ConversionException("Northing outside of valid range "
+                    + "(0 to 10,000,000 meters)");
         }
         return utm;
     }
@@ -228,7 +222,7 @@ public class UtmCRS extends ProjectedCRS<UTM>
     @Override
     protected AbsolutePosition positionOf(UTM utm, AbsolutePosition ap) {
         double Origin_Latitude = 0;
-        double Central_Meridian = 0;
+        double Central_Meridian;
         double False_Easting = 500000;
         double False_Northing = 0;
         double Scale = 0.9996;
@@ -260,22 +254,22 @@ public class UtmCRS extends ProjectedCRS<UTM>
         }
         TransverseMercator tm = TransverseMercator.valueOf(easting, northing,
                 SI.METER);
-        LatLong latLong = 
-                TransverseMercator.transverseMercatorToLatLong(tm, utmA,
-                utmF, Origin_Latitude, Central_Meridian,
-                False_Easting, False_Northing, Scale);
+        LatLong latLong
+                = TransverseMercator.transverseMercatorToLatLong(tm, utmA,
+                        utmF, Origin_Latitude, Central_Meridian,
+                        False_Easting, False_Northing, Scale);
 
         if ((latLong.latitudeValue(SI.RADIAN) < MIN_LAT)
-                || (latLong.latitudeValue(SI.RADIAN) > MAX_LAT))
-        { /* Latitude out of range */
+                || (latLong.latitudeValue(SI.RADIAN) > MAX_LAT)) {
+            /* Latitude out of range */
             throw new ConversionException("Northing outside of valid range "
                     + "(0 to 10,000,000 meters)");
         }
 
-        ap.latitudeWGS84 =
-                Measure.valueOf(latLong.latitudeValue(SI.RADIAN), SI.RADIAN);
-        ap.longitudeWGS84 =
-                Measure.valueOf(latLong.longitudeValue(SI.RADIAN), SI.RADIAN);
+        ap.latitudeWGS84
+                = Measure.valueOf(latLong.latitudeValue(SI.RADIAN), SI.RADIAN);
+        ap.longitudeWGS84
+                = Measure.valueOf(latLong.longitudeValue(SI.RADIAN), SI.RADIAN);
         return ap;
     }
 
@@ -284,5 +278,4 @@ public class UtmCRS extends ProjectedCRS<UTM>
         return ProjectedCRS.EASTING_NORTHING_CS;
     }
 
-    
 }

@@ -21,7 +21,7 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
  */
-package gov.ic.geoint.jeotrans.coordinate;
+package org.geoint.jeotrans.coordinate;
 
 import javax.measure.converter.ConversionException;
 import javax.measure.converter.UnitConverter;
@@ -31,7 +31,7 @@ import javax.measure.unit.Unit;
 import javolution.text.Text;
 import org.jscience.geography.coordinates.Coordinates;
 import org.jscience.geography.coordinates.LatLong;
-import gov.ic.geoint.jeotrans.util.ConversionUtil;
+import org.geoint.jeotrans.util.ConversionUtil;
 import org.jscience.geography.coordinates.crs.CoordinatesConverter;
 import org.jscience.geography.coordinates.crs.ProjectedCRS;
 import org.jscience.geography.coordinates.crs.UtmCRS;
@@ -40,47 +40,42 @@ import org.jscience.geography.coordinates.crs.UtmCRS;
  * Universal Transverse Mercator projection
  *
  * The UTM projection is a complex system that uses 120 Transverse Mercator
- * projections to make up the main part of the globe, and uses
- * Universal Polar Stereographic (UPS) to represent locations in the northern
- * and southern polar regions.
+ * projections to make up the main part of the globe, and uses Universal Polar
+ * Stereographic (UPS) to represent locations in the northern and southern polar
+ * regions.
  *
- * NOTE ABOUT PERSISTENCE
- * ----------------------
- * The non-geodetic classs are designed for conversion/presentation of
- * geodetic coordinates and not intented to be serialized or persisted.
- * The intent is to store all coordinates in geodetic form and convert to
- * other forms (projected, geocentric, etc) as needed.
- * 
- * NOTATION
- * --------
- * UTM notation is somewhat confusion as a result of a single UTM point
- * may actually be in two places on the earth (the northern and southern
- * hemispheres).  In response to the lack of hemisphere notations, users of
- * the UTM system typically use one of two "shorthand" notations that add
+ * NOTE ABOUT PERSISTENCE ---------------------- The non-geodetic classs are
+ * designed for conversion/presentation of geodetic coordinates and not intented
+ * to be serialized or persisted. The intent is to store all coordinates in
+ * geodetic form and convert to other forms (projected, geocentric, etc) as
+ * needed.
+ *
+ * NOTATION -------- UTM notation is somewhat confusion as a result of a single
+ * UTM point may actually be in two places on the earth (the northern and
+ * southern hemispheres). In response to the lack of hemisphere notations, users
+ * of the UTM system typically use one of two "shorthand" notations that add
  * this information but each results in confusion in their own way:
  *
- *   The two notiations below reference the same point: 92°W, 38°N
+ * The two notiations below reference the same point: 92°W, 38°N
  *
- *   Prefix the UTM location with the longitude zone and hemisphere:
- *                   15N 587798 4206287
+ * Prefix the UTM location with the longitude zone and hemisphere: 15N 587798
+ * 4206287
  *
- *   Prefix the UTM with the longitude zone and latitude zone:
- *                   15S 587798 4206287
+ * Prefix the UTM with the longitude zone and latitude zone: 15S 587798 4206287
  *
  * As you can see, this can get confusing (was the person talking about the
  * southern hemisphere or the 'S' band of latitude?).
  *
- * NGA has yet to come out with guidance on how to annotate this properly.
- * For this reason, this class provides methods specifically designed to allow
- * developers to annotate UTM how they desire.  The important thing is that
- * it stays consistant throughout an application/problem domain. It should be
- * noted that this class defaults to the longitude zone/latitude zone format
- * (this differs from geotrans).
+ * NGA has yet to come out with guidance on how to annotate this properly. For
+ * this reason, this class provides methods specifically designed to allow
+ * developers to annotate UTM how they desire. The important thing is that it
+ * stays consistant throughout an application/problem domain. It should be noted
+ * that this class defaults to the longitude zone/latitude zone format (this
+ * differs from geotrans).
  *
  * @author Steve Siebert
  */
 public final class UTM extends Coordinates<ProjectedCRS<?>> {
-
 
     /**
      * easting value in meters
@@ -105,12 +100,12 @@ public final class UTM extends Coordinates<ProjectedCRS<?>> {
     private static final int MAX_NORTHING = 10000000;
 
     private static final int MAX_PRECISION = 3;
-    
+
     /**
      * default CRS, used for most projections, so caching it here
      */
-    private static final UtmCRS DEFAULT_CRS =
-            new UtmCRS();
+    private static final UtmCRS DEFAULT_CRS
+            = new UtmCRS();
     /**
      * the CRS used to generate this projection
      */
@@ -137,7 +132,6 @@ public final class UTM extends Coordinates<ProjectedCRS<?>> {
     private void setNorthing(double northing) {
         this.northing = northing;
     }
-
 
     private void setLatitudeZone(char latitudeZone) {
         this.latitudeZone = latitudeZone;
@@ -175,14 +169,11 @@ public final class UTM extends Coordinates<ProjectedCRS<?>> {
      * @param precision
      * @return
      */
-    public double northingValue(Unit<Length> unit, int precision)
-    {
-        if (precision > MAX_PRECISION)
-        {
+    public double northingValue(Unit<Length> unit, int precision) {
+        if (precision > MAX_PRECISION) {
             precision = MAX_PRECISION;
         }
-        if (precision < 0)
-        {
+        if (precision < 0) {
             precision = 0;
         }
 
@@ -197,14 +188,11 @@ public final class UTM extends Coordinates<ProjectedCRS<?>> {
      * @param precision
      * @return
      */
-    public double eastingValue (Unit<Length> unit, int precision)
-    {
-        if (precision > MAX_PRECISION)
-        {
+    public double eastingValue(Unit<Length> unit, int precision) {
+        if (precision > MAX_PRECISION) {
             precision = MAX_PRECISION;
         }
-        if (precision < 0)
-        {
+        if (precision < 0) {
             precision = 0;
         }
         return ConversionUtil.roundHalfUp(eastingValue(unit), precision);
@@ -229,29 +217,28 @@ public final class UTM extends Coordinates<ProjectedCRS<?>> {
     }
 
     /**
-     * Determine if this UTM projection is within the northern hemisphere
-     * (not including the northern polar)
+     * Determine if this UTM projection is within the northern hemisphere (not
+     * including the northern polar)
      *
      * @return
      */
     public boolean isNorthernHemisphere() {
-        return (latitudeZone > 'M') ? true : false;
+        return (latitudeZone > 'M');
     }
 
     /**
-     * Determine if this UTM projection is within the southern hemisphere
-     * (not including the southern polar)
+     * Determine if this UTM projection is within the southern hemisphere (not
+     * including the southern polar)
      *
      * @return
      */
     public boolean isSouthernHemisphere() {
-        return (latitudeZone < 'N') ? true : false;
+        return (latitudeZone < 'N');
     }
 
     @Override
     public ProjectedCRS<?> getCoordinateReferenceSystem() {
-        if (CRS == null)
-        {
+        if (CRS == null) {
             CRS = DEFAULT_CRS;
         }
         return CRS;
@@ -264,14 +251,15 @@ public final class UTM extends Coordinates<ProjectedCRS<?>> {
 
     @Override
     public double getOrdinate(int dimension) throws IndexOutOfBoundsException {
-        if (dimension == 1) {
-            Unit<?> u = ProjectedCRS.EASTING_NORTHING_CS.getAxis(0).getUnit();
-            return SI.METER.getConverterTo(u).convert(easting);
-        } else if (dimension == 1) {
-            Unit<?> u = ProjectedCRS.EASTING_NORTHING_CS.getAxis(1).getUnit();
-            return SI.METER.getConverterTo(u).convert(northing);
-        } else {
-            throw new IndexOutOfBoundsException();
+        switch (dimension) {
+            case 0:
+                Unit<?> u0 = ProjectedCRS.EASTING_NORTHING_CS.getAxis(0).getUnit();
+                return SI.METER.getConverterTo(u0).convert(easting);
+            case 1:
+                Unit<?> u1 = ProjectedCRS.EASTING_NORTHING_CS.getAxis(1).getUnit();
+                return SI.METER.getConverterTo(u1).convert(northing);
+            default:
+                throw new IndexOutOfBoundsException();
         }
     }
 
@@ -287,9 +275,9 @@ public final class UTM extends Coordinates<ProjectedCRS<?>> {
 
     /**
      * Return the UTM for the provided values
-     * 
-     * NOTE:  This method does minimal validation the values provided,
-     * use the conversion utilities to validate content
+     *
+     * NOTE: This method does minimal validation the values provided, use the
+     * conversion utilities to validate content
      *
      * @param longitudeZone
      * @param latitudeZone
@@ -299,15 +287,14 @@ public final class UTM extends Coordinates<ProjectedCRS<?>> {
      * @return
      */
     public static UTM valueOf(int longitudeZone, char latitudeZone, double easting,
-            double northing, Unit<Length> unit) throws ConversionException
-    {
+            double northing, Unit<Length> unit) throws ConversionException {
         if ((easting < MIN_EASTING) || (easting > MAX_EASTING)) {
-            throw new ConversionException ("Easting outside of valid " +
-                    "range (100,000 to 900,000 meters)");
+            throw new ConversionException("Easting outside of valid "
+                    + "range (100,000 to 900,000 meters)");
         }
         if ((northing < MIN_NORTHING) || (northing > MAX_NORTHING)) {
-            throw new ConversionException ("Northing outside of valid " +
-                    "range (0 to 10,000,000 meters)");
+            throw new ConversionException("Northing outside of valid "
+                    + "range (0 to 10,000,000 meters)");
         }
 
         UTM utm = new UTM();
@@ -338,9 +325,8 @@ public final class UTM extends Coordinates<ProjectedCRS<?>> {
      * @return
      * @throws ConversionException
      */
-    public static UTM valueOf (int longitudeZone, char latitudeZone, double easting,
-            double northing, Unit<Length> unit, UtmCRS crs) throws ConversionException
-    {
+    public static UTM valueOf(int longitudeZone, char latitudeZone, double easting,
+            double northing, Unit<Length> unit, UtmCRS crs) throws ConversionException {
         UTM utm = valueOf(longitudeZone, latitudeZone, easting, northing, unit);
         utm.CRS = crs;
         return utm;
@@ -352,10 +338,9 @@ public final class UTM extends Coordinates<ProjectedCRS<?>> {
      * @param latLong
      * @return
      */
-    public static UTM latLongToUtm (LatLong latLong)
-    {
-        CoordinatesConverter<LatLong, UTM> latLongToUtm =
-                LatLong.CRS.getConverterTo(UTM.DEFAULT_CRS);
+    public static UTM latLongToUtm(LatLong latLong) {
+        CoordinatesConverter<LatLong, UTM> latLongToUtm
+                = LatLong.CRS.getConverterTo(UTM.DEFAULT_CRS);
         return latLongToUtm.convert(latLong);
     }
 
@@ -369,12 +354,11 @@ public final class UTM extends Coordinates<ProjectedCRS<?>> {
      * @param override
      * @return
      */
-    public static UTM latLongToUtm (LatLong latLong, double semiMajor,
-            double flattening, int override)
-    {
+    public static UTM latLongToUtm(LatLong latLong, double semiMajor,
+            double flattening, int override) {
         UtmCRS crs = new UtmCRS(semiMajor, flattening, override);
-        CoordinatesConverter<LatLong, UTM> latLongToUtm =
-                LatLong.CRS.getConverterTo(crs);
+        CoordinatesConverter<LatLong, UTM> latLongToUtm
+                = LatLong.CRS.getConverterTo(crs);
         return latLongToUtm.convert(latLong);
     }
 
@@ -384,83 +368,80 @@ public final class UTM extends Coordinates<ProjectedCRS<?>> {
      * @param utm
      * @return
      */
-    public static LatLong utmToLatLong (UTM utm)
-    {
-        CoordinatesConverter<UTM, LatLong> utmToLatLong =
-                UTM.DEFAULT_CRS.getConverterTo(LatLong.CRS);
+    public static LatLong utmToLatLong(UTM utm) {
+        CoordinatesConverter<UTM, LatLong> utmToLatLong
+                = UTM.DEFAULT_CRS.getConverterTo(LatLong.CRS);
         return utmToLatLong.convert(utm);
     }
 
     /**
      * Convenience method to convert UTM to geodetic using alternate parameters
-     * 
+     *
      * @param utm
      * @param semiMajor
      * @param flattening
      * @param override
      * @return
      */
-    public static LatLong utmToLatLong (UTM utm, double semiMajor,
-            double flattening, int override)
-    {
+    public static LatLong utmToLatLong(UTM utm, double semiMajor,
+            double flattening, int override) {
         UtmCRS crs = new UtmCRS(semiMajor, flattening, override);
-        CoordinatesConverter<UTM, LatLong> utmToLatLong =
-                crs.getConverterTo(LatLong.CRS);
+        CoordinatesConverter<UTM, LatLong> utmToLatLong
+                = crs.getConverterTo(LatLong.CRS);
         return utmToLatLong.convert(utm);
     }
 
     /**
-     * check if both UTM coordinates are equal
-     * 
-     * @param o
-     * @return
-     */
-    @Override
-    public boolean equals (Object o)
-    {
-        if (!(o instanceof UTM))
-        {
-            return false;
-        }
-
-        UTM ref = (UTM) o;
-        if (    (this.eastingValue(SI.METER, MAX_PRECISION) == ref.eastingValue(SI.METER, MAX_PRECISION)) &&
-                (this.northingValue(SI.METER, MAX_PRECISION) == ref.northingValue(SI.METER, MAX_PRECISION)) &&
-                (this.latitudeZone == ref.getLatitudeZone()) &&
-                (this.utmZone == ref.getUtmZone())
-           )
-        {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Simply groups UTM objects by their utm zone
-     *
-     * This is done simply because UTM is designed to be used strictly for
-     * presentation.  Anything more that simple presentation (ie. persistance)
-     * should be done in geodetic form (LatLong).
-     *
-     * @return
-     */
-    @Override
-    public int hashCode ()
-    {
-        return getUtmZone();
-    }
-
-    /**
-     * Present in default UTM form.  Easting and Northings are in meters.
+     * Present in default UTM form. Easting and Northings are in meters.
      *
      * example: 15H 12345 12345
      *
      * @return
      */
     @Override
-    public Text toText ()
-    {
-        return new Text(this.getUtmZone()+String.valueOf(this.getLatitudeZone())+" "+
-                eastingValue(SI.METER, MAX_PRECISION)+" "+northingValue(SI.METER, MAX_PRECISION));
+    public Text toText() {
+        return new Text(asString());
     }
+
+    String asString() {
+        return String.format("%d%s %f %f",
+                this.getUtmZone(),
+                String.valueOf(this.getLatitudeZone()),
+                eastingValue(SI.METER, MAX_PRECISION),
+                northingValue(SI.METER, MAX_PRECISION));
+    }
+
+    /**
+     * check if both UTM coordinates are equal
+     *
+     * @param o
+     * @return
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof UTM)) {
+            return false;
+        }
+
+        UTM ref = (UTM) o;
+        return (this.eastingValue(SI.METER, MAX_PRECISION) == ref.eastingValue(SI.METER, MAX_PRECISION))
+                && (this.northingValue(SI.METER, MAX_PRECISION) == ref.northingValue(SI.METER, MAX_PRECISION))
+                && (this.latitudeZone == ref.getLatitudeZone())
+                && (this.utmZone == ref.getUtmZone());
+    }
+
+    /**
+     * Simply groups UTM objects by their utm zone
+     *
+     * This is done simply because UTM is designed to be used strictly for
+     * presentation. Anything more that simple presentation (ie. persistance)
+     * should be done in geodetic form (LatLong).
+     *
+     * @return
+     */
+    @Override
+    public int hashCode() {
+        return getUtmZone();
+    }
+
 }

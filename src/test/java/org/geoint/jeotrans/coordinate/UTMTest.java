@@ -22,14 +22,14 @@
  *  THE SOFTWARE.
  */
 
-package gov.ic.geoint.jeotrans.coordinate;
+package org.geoint.jeotrans.coordinate;
 
-import gov.ic.geoint.jeotrans.coordinate.UTM;
+import org.geoint.jeotrans.coordinate.UTM;
 import java.util.ArrayList;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import org.jscience.geography.coordinates.LatLong;
-import gov.ic.geoint.jeotrans.util.ConversionUtil;
+import org.geoint.jeotrans.util.ConversionUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

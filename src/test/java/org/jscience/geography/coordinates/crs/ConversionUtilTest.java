@@ -23,7 +23,7 @@
  */
 package org.jscience.geography.coordinates.crs;
 
-import gov.ic.geoint.jeotrans.util.ConversionUtil;
+import org.geoint.jeotrans.util.ConversionUtil;
 import javax.measure.unit.NonSI;
 import org.jscience.geography.coordinates.LatLong;
 import org.junit.Test;

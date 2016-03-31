@@ -26,8 +26,8 @@ package org.jscience.geography.coordinates.crs;
 import javax.measure.Measure;
 import javax.measure.converter.ConversionException;
 import javax.measure.unit.SI;
-import gov.ic.geoint.jeotrans.coordinate.PolarStereographic;
-import gov.ic.geoint.jeotrans.coordinate.UPS;
+import org.geoint.jeotrans.coordinate.PolarStereographic;
+import org.geoint.jeotrans.coordinate.UPS;
 import org.jscience.geography.coordinates.LatLong;
 import org.jscience.geography.coordinates.crs.CoordinateReferenceSystem.AbsolutePosition;
 import org.opengis.referencing.cs.CoordinateSystem;
@@ -36,7 +36,7 @@ import org.opengis.referencing.cs.CoordinateSystem;
  *
  * @author Steve Siebert
  */
-public class UpsCRS extends ProjectedCRS<UPS> {
+public final class UpsCRS extends ProjectedCRS<UPS> {
 
     private static final double MAX_LAT = ((Math.PI * 90) / 180.0); //radians
     private static final double MAX_ORIGIN_LAT = ((81.114528 * Math.PI) / 180.0); //radians
@@ -48,7 +48,7 @@ public class UpsCRS extends ProjectedCRS<UPS> {
     private static final double MAX_EAST_NORTH = 4000000;
 
     /* Ellipsoid Parameters, default to WGS 84  */
-    /* Semi-major axis of ellipsoid in meters
+ /* Semi-major axis of ellipsoid in meters
      */
     private double upsA = 6378137.0;
     /* Flattening of ellipsoid
@@ -67,11 +67,13 @@ public class UpsCRS extends ProjectedCRS<UPS> {
         super();
         double invF = 1 / flattening;
 
-        if (semiMajor <= 0.0) { /* Semi-major axis must be greater than zero */
+        if (semiMajor <= 0.0) {
+            /* Semi-major axis must be greater than zero */
             throw new ConversionException("Semi-major axis less than or "
                     + "equal to zero");
         }
-        if ((invF < 250) || (invF > 350)) { /* Inverse flattening must be between 250 and 350 */
+        if ((invF < 250) || (invF > 350)) {
+            /* Inverse flattening must be between 250 and 350 */
             throw new ConversionException("Inverse flattening outside of "
                     + "valid range (250 to 350)");
         }
@@ -91,7 +93,8 @@ public class UpsCRS extends ProjectedCRS<UPS> {
         double longitude = ap.longitudeWGS84.doubleValue(SI.RADIAN);
         char hemisphere;
 
-        if ((latitude < -MAX_LAT) || (latitude > MAX_LAT)) {   /* latitude out of range */
+        if ((latitude < -MAX_LAT) || (latitude > MAX_LAT)) {
+            /* latitude out of range */
             throw new ConversionException("Latitude outside of valid range "
                     + "(North Pole: 83.5 to 90, South Pole: -79.5 to -90)");
         }
@@ -103,11 +106,11 @@ public class UpsCRS extends ProjectedCRS<UPS> {
             throw new ConversionException("Latitude outside of valid range "
                     + "(North Pole: 83.5 to 90, South Pole: -79.5 to -90)");
         }
-        if ((longitude < -Math.PI) || (longitude > (2 * Math.PI))) {  /* slam out of range */
+        if ((longitude < -Math.PI) || (longitude > (2 * Math.PI))) {
+            /* slam out of range */
             throw new ConversionException("Longitude outside of valid "
                     + "range (-180 to 360 degrees)");
         }
-
 
         if (latitude < 0) {
             upsOriginLatitude = -MAX_ORIGIN_LAT;
@@ -119,9 +122,10 @@ public class UpsCRS extends ProjectedCRS<UPS> {
 
         LatLong latLong = LatLong.valueOf(latitude, longitude, SI.RADIAN);
 
-        PolarStereographic ps = PolarStereographic.latLongToPolarStereographic
-                (latLong, upsA, upsF, upsOriginLatitude, upsOriginLongitude,
-                UPS_FALSE_EASTING, UPS_FALSE_NORTHING);
+        PolarStereographic ps
+                = PolarStereographic.latLongToPolarStereographic(latLong,
+                        upsA, upsF, upsOriginLatitude, upsOriginLongitude,
+                        UPS_FALSE_EASTING, UPS_FALSE_NORTHING);
 
         UPS ups = UPS.valueOf(ps.eastingValue(SI.METER),
                 ps.northingValue(SI.METER), hemisphere, SI.METER, this);
@@ -154,9 +158,10 @@ public class UpsCRS extends ProjectedCRS<UPS> {
         }
 
         /**
-         * PolarStereographic ps = PolarStereographic.latLongToPolarStereographic
-                (latLong, upsA, upsF, upsOriginLatitude, upsOriginLongitude,
-                UPS_FALSE_EASTING, UPS_FALSE_NORTHING);
+         * PolarStereographic ps =
+         * PolarStereographic.latLongToPolarStereographic (latLong, upsA, upsF,
+         * upsOriginLatitude, upsOriginLongitude, UPS_FALSE_EASTING,
+         * UPS_FALSE_NORTHING);
          *
          */
         /*
@@ -164,21 +169,19 @@ public class UpsCRS extends ProjectedCRS<UPS> {
             double a, double f, double latitudeScale, double longitudeFromPole,
             double falseEasting, double falseNorthing)
          */
-        PolarStereographic ps = PolarStereographic.valueOf
-                (ups.eastingValue(SI.METER), ups.northingValue(SI.METER), SI.METER);
+        PolarStereographic ps = PolarStereographic.valueOf(ups.eastingValue(SI.METER), ups.northingValue(SI.METER), SI.METER);
 
-        LatLong latLong = PolarStereographic.polarStereographicToLatLong
-                (ps, upsA, upsF, upsOriginLatitude, upsOriginLongitude,
+        LatLong latLong = PolarStereographic.polarStereographicToLatLong(ps, upsA, upsF, upsOriginLatitude, upsOriginLongitude,
                 UPS_FALSE_EASTING, UPS_FALSE_NORTHING);
 
         double lat = latLong.latitudeValue(SI.RADIAN);
         double lon = latLong.longitudeValue(SI.RADIAN);
         if ((lat < 0) && (lat > MIN_SOUTH_LAT)) {
-            throw new ConversionException("Latitude outside of valid range " +
-                    "(North Pole: 83.5 to 90, South Pole: -79.5 to -90)");
+            throw new ConversionException("Latitude outside of valid range "
+                    + "(North Pole: 83.5 to 90, South Pole: -79.5 to -90)");
         }
         if ((lon >= 0) && (lon < MIN_NORTH_LAT)) {
-                        System.out.println("Longitude: "+lon);
+            System.out.println("Longitude: " + lon);
 
             //throw new ConversionException("Longitude outside of valid range " +
             //        "(-180 to 360 degrees)");

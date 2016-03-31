@@ -22,9 +22,9 @@
  *  THE SOFTWARE.
  */
 
-package gov.ic.geoint.jeotrans.coordinate;
+package org.geoint.jeotrans.coordinate;
 
-import gov.ic.geoint.jeotrans.coordinate.TransverseMercator;
+import org.geoint.jeotrans.coordinate.TransverseMercator;
 import java.util.ArrayList;
 import javax.measure.unit.SI;
 import org.jscience.geography.coordinates.LatLong;

@@ -22,9 +22,9 @@
  *  THE SOFTWARE.
  */
 
-package gov.ic.geoint.jeotrans.coordinate;
+package org.geoint.jeotrans.coordinate;
 
-import gov.ic.geoint.jeotrans.coordinate.PolarStereographic;
+import org.geoint.jeotrans.coordinate.PolarStereographic;
 import java.util.ArrayList;
 import javax.measure.unit.SI;
 import org.junit.AfterClass;

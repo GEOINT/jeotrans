@@ -26,7 +26,7 @@ package org.jscience.geography.coordinates.crs;
 import javax.measure.Measure;
 import javax.measure.converter.ConversionException;
 import javax.measure.unit.SI;
-import gov.ic.geoint.jeotrans.coordinate.TransverseMercator;
+import org.geoint.jeotrans.coordinate.TransverseMercator;
 
 import org.opengis.referencing.cs.CoordinateSystem;
 
@@ -34,7 +34,7 @@ import org.opengis.referencing.cs.CoordinateSystem;
  *
  * @author Steve Siebert
  */
-public class TransverseMercatorCRS extends ProjectedCRS<TransverseMercator>
+public final class TransverseMercatorCRS extends ProjectedCRS<TransverseMercator>
 {
 
     /* Math constants */

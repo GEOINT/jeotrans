@@ -21,7 +21,7 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
  */
-package gov.ic.geoint.jeotrans.coordinate;
+package org.geoint.jeotrans.coordinate;
 
 import javax.measure.converter.UnitConverter;
 import javax.measure.quantity.Length;
@@ -30,7 +30,7 @@ import javax.measure.unit.Unit;
 import javolution.text.Text;
 import org.jscience.geography.coordinates.Coordinates;
 import org.jscience.geography.coordinates.LatLong;
-import gov.ic.geoint.jeotrans.util.ConversionUtil;
+import org.geoint.jeotrans.util.ConversionUtil;
 import org.jscience.geography.coordinates.crs.CoordinatesConverter;
 import org.jscience.geography.coordinates.crs.ProjectedCRS;
 import org.jscience.geography.coordinates.crs.TransverseMercatorCRS;
@@ -38,13 +38,12 @@ import org.jscience.geography.coordinates.crs.TransverseMercatorCRS;
 /**
  * Transverse Mercator projection coordinate
  *
- * NOTE ABOUT PERSISTENCE
- * ----------------------
- * The non-geodetic classs are designed for conversion/presentation of
- * geodetic coordinates and not intented to be serialized or persisted.
- * The intent is to store all coordinates in geodetic form and convert to
- * other forms (projected, geocentric, etc) as needed.
- * 
+ * NOTE ABOUT PERSISTENCE ---------------------- The non-geodetic classs are
+ * designed for conversion/presentation of geodetic coordinates and not intented
+ * to be serialized or persisted. The intent is to store all coordinates in
+ * geodetic form and convert to other forms (projected, geocentric, etc) as
+ * needed.
+ *
  * @author Steve Siebert
  */
 public final class TransverseMercator extends Coordinates<ProjectedCRS<?>> {
@@ -53,12 +52,12 @@ public final class TransverseMercator extends Coordinates<ProjectedCRS<?>> {
     private double easting; //in meters
 
     private static final int MAX_PRECISION = 3;
-    
+
     /**
      * default CRS, used for most projections, so caching it here
      */
-    private static final TransverseMercatorCRS DEFAULT_CRS =
-            new TransverseMercatorCRS();
+    private static final TransverseMercatorCRS DEFAULT_CRS
+            = new TransverseMercatorCRS();
     /**
      * the CRS used to generate this projection
      */
@@ -116,14 +115,11 @@ public final class TransverseMercator extends Coordinates<ProjectedCRS<?>> {
      * @param precision
      * @return
      */
-    public double northingValue(Unit<Length> unit, int precision)
-    {
-        if (precision > MAX_PRECISION)
-        {
+    public double northingValue(Unit<Length> unit, int precision) {
+        if (precision > MAX_PRECISION) {
             precision = MAX_PRECISION;
         }
-        if (precision < 0)
-        {
+        if (precision < 0) {
             precision = 0;
         }
 
@@ -138,14 +134,11 @@ public final class TransverseMercator extends Coordinates<ProjectedCRS<?>> {
      * @param precision
      * @return
      */
-    public double eastingValue (Unit<Length> unit, int precision)
-    {
-        if (precision > MAX_PRECISION)
-        {
+    public double eastingValue(Unit<Length> unit, int precision) {
+        if (precision > MAX_PRECISION) {
             precision = MAX_PRECISION;
         }
-        if (precision < 0)
-        {
+        if (precision < 0) {
             precision = 0;
         }
         return ConversionUtil.roundHalfUp(eastingValue(unit), precision);
@@ -171,14 +164,15 @@ public final class TransverseMercator extends Coordinates<ProjectedCRS<?>> {
 
     @Override
     public double getOrdinate(int dimension) throws IndexOutOfBoundsException {
-        if (dimension == 1) {
-            Unit<?> u = ProjectedCRS.EASTING_NORTHING_CS.getAxis(0).getUnit();
-            return SI.METER.getConverterTo(u).convert(easting);
-        } else if (dimension == 1) {
-            Unit<?> u = ProjectedCRS.EASTING_NORTHING_CS.getAxis(1).getUnit();
-            return SI.METER.getConverterTo(u).convert(northing);
-        } else {
-            throw new IndexOutOfBoundsException();
+        switch (dimension) {
+            case 0:
+                Unit<?> u0 = ProjectedCRS.EASTING_NORTHING_CS.getAxis(0).getUnit();
+                return SI.METER.getConverterTo(u0).convert(easting);
+            case 1:
+                Unit<?> u1 = ProjectedCRS.EASTING_NORTHING_CS.getAxis(1).getUnit();
+                return SI.METER.getConverterTo(u1).convert(northing);
+            default:
+                throw new IndexOutOfBoundsException();
         }
     }
 
@@ -194,15 +188,15 @@ public final class TransverseMercator extends Coordinates<ProjectedCRS<?>> {
 
     /**
      * Convenience method that converts geodetic (LatLong) coordinates to
-     * Transverse Mercator projection according to current ellipsoid and
-     * default Transverse Mercator projection parameters.
+     * Transverse Mercator projection according to current ellipsoid and default
+     * Transverse Mercator projection parameters.
      *
      * @param latLong
      * @return
      */
     public static TransverseMercator latLongToTransverseMercator(LatLong latLong) {
-        CoordinatesConverter<LatLong, TransverseMercator> latLongToTM =
-                LatLong.CRS.getConverterTo(DEFAULT_CRS);
+        CoordinatesConverter<LatLong, TransverseMercator> latLongToTM
+                = LatLong.CRS.getConverterTo(DEFAULT_CRS);
         return latLongToTM.convert(latLong);
     }
 
@@ -212,17 +206,24 @@ public final class TransverseMercator extends Coordinates<ProjectedCRS<?>> {
      * provided Transverse Mercator projection parameters
      *
      * @param latLong
-     * @param parameters
+     * @param semiMajorAxis
+     * @param flattening
+     * @param originLatitude
+     * @param centralMeridian
+     * @param falseEasting
+     * @param falseNorthing
+     * @param scale
      * @return
      */
-    public static TransverseMercator latLongToTransverseMercator(LatLong latLong, double semiMajorAxis, double flattening,
+    public static TransverseMercator latLongToTransverseMercator(LatLong latLong,
+            double semiMajorAxis, double flattening,
             double originLatitude, double centralMeridian, double falseEasting,
             double falseNorthing, double scale) {
         TransverseMercatorCRS tmcrs = new TransverseMercatorCRS(semiMajorAxis,
                 flattening, originLatitude, centralMeridian, falseEasting,
                 falseNorthing, scale);
-        CoordinatesConverter<LatLong, TransverseMercator> latLongToTM =
-                LatLong.CRS.getConverterTo(tmcrs);
+        CoordinatesConverter<LatLong, TransverseMercator> latLongToTM
+                = LatLong.CRS.getConverterTo(tmcrs);
         return latLongToTM.convert(latLong);
     }
 
@@ -235,18 +236,24 @@ public final class TransverseMercator extends Coordinates<ProjectedCRS<?>> {
      * @return
      */
     public static LatLong transverseMercatorToLatLong(TransverseMercator tm) {
-        CoordinatesConverter<TransverseMercator, LatLong> tmToLatLong =
-                TransverseMercator.DEFAULT_CRS.getConverterTo(LatLong.CRS);
+        CoordinatesConverter<TransverseMercator, LatLong> tmToLatLong
+                = TransverseMercator.DEFAULT_CRS.getConverterTo(LatLong.CRS);
         return tmToLatLong.convert(tm);
     }
 
     /**
      * Converts Transverse Mercator projection coordinates to geodetic (LatLong)
-     * coordinates according to current ellisoid and provided Transverse Mercator
-     * projection parameters.
+     * coordinates according to current ellisoid and provided Transverse
+     * Mercator projection parameters.
      *
      * @param tm
-     * @param parameters
+     * @param semiMajorAxis
+     * @param flattening
+     * @param falseEasting
+     * @param originLatitude
+     * @param centralMeridian
+     * @param falseNorthing
+     * @param scale
      * @return
      */
     public static LatLong transverseMercatorToLatLong(TransverseMercator tm, double semiMajorAxis, double flattening,
@@ -256,8 +263,8 @@ public final class TransverseMercator extends Coordinates<ProjectedCRS<?>> {
                 flattening, originLatitude, centralMeridian, falseEasting,
                 falseNorthing, scale);
         tm.CRS = tmcrs;
-        CoordinatesConverter<TransverseMercator, LatLong> tmToLatLong =
-                tmcrs.getConverterTo(LatLong.CRS);
+        CoordinatesConverter<TransverseMercator, LatLong> tmToLatLong
+                = tmcrs.getConverterTo(LatLong.CRS);
         return tmToLatLong.convert(tm);
     }
 
@@ -288,9 +295,9 @@ public final class TransverseMercator extends Coordinates<ProjectedCRS<?>> {
      * Return the Transverse Mercator projection for the provided values,
      * setting a custom CRS
      *
-     * NOTE:  This method does not validate the values provided,
-     * use the conversion utilities to validate content
-     * 
+     * NOTE: This method does not validate the values provided, use the
+     * conversion utilities to validate content
+     *
      * @param easting
      * @param northing
      * @param unit
@@ -305,6 +312,24 @@ public final class TransverseMercator extends Coordinates<ProjectedCRS<?>> {
     }
 
     /**
+     * Return default TM format
+     *
+     * Example: 1234.123m 1234.123m
+     *
+     * @return
+     */
+    @Override
+    public Text toText() {
+        return new Text(asString());
+    }
+
+    String asString() {
+        return String.format("%fm %fm",
+                eastingValue(SI.METER, 0),
+                northingValue(SI.METER, 0));
+    }
+
+    /**
      * Check if the values are equal
      *
      * @param o
@@ -316,16 +341,13 @@ public final class TransverseMercator extends Coordinates<ProjectedCRS<?>> {
             return false;
         }
         TransverseMercator tm = (TransverseMercator) o;
-        if (easting == tm.eastingValue(SI.METER)
-                && northing == tm.northingValue(SI.METER)) {
-            return true;
-        }
-        return false;
+        return easting == tm.eastingValue(SI.METER)
+                && northing == tm.northingValue(SI.METER);
     }
 
     /**
      * Standard generated hashcode
-     * 
+     *
      * @return
      */
     @Override
@@ -336,16 +358,4 @@ public final class TransverseMercator extends Coordinates<ProjectedCRS<?>> {
         return hash;
     }
 
-    /**
-     * Return default TM format
-     *
-     * Example:  1234.123m 1234.123m
-     *
-     * @return
-     */
-    @Override
-    public Text toText()
-    {
-        return new Text((int) eastingValue(SI.METER, 0)+"m "+(int) northingValue(SI.METER, 0)+"m");
-    }
 }
