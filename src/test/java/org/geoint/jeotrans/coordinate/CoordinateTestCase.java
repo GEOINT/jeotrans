@@ -24,11 +24,6 @@
 
 package org.geoint.jeotrans.coordinate;
 
-import org.geoint.jeotrans.coordinate.UPS;
-import org.geoint.jeotrans.coordinate.MGRS;
-import org.geoint.jeotrans.coordinate.UTM;
-import org.geoint.jeotrans.coordinate.TransverseMercator;
-import org.geoint.jeotrans.coordinate.PolarStereographic;
 import java.util.ArrayList;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;

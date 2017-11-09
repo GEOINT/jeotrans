@@ -24,14 +24,12 @@
 
 package org.geoint.jeotrans.coordinate;
 
-import org.geoint.jeotrans.coordinate.TransverseMercator;
 import java.util.ArrayList;
 import javax.measure.unit.SI;
-import org.jscience.geography.coordinates.LatLong;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -58,7 +56,6 @@ public class TransverseMercatorTest {
      */
     @Test
     public void testCopy() {
-        System.out.println("TransverseMercator.copy()");
         TransverseMercator first = TransverseMercator.valueOf(3845070, 8248570, SI.METER);
         TransverseMercator second = first.copy();
         assertFalse("Did not make a copy", first == second);
@@ -71,7 +68,6 @@ public class TransverseMercatorTest {
     @Test
     public void testLatLongToTransverseMercator_LatLong() {
         
-        System.out.println("TransverseMercator.latLongToTransverseMercator(LatLong)");
         //iterate over the test cases
         for (CoordinateTestCase t : testCases)
         {
@@ -80,8 +76,6 @@ public class TransverseMercatorTest {
             {
                 TransverseMercator result =
                         TransverseMercator.latLongToTransverseMercator(t.getLatLong());
-                System.out.print("Testing "+t.getLatLong().toString()+" " +
-                        "(expected: "+expected.toText()+")   result: "+result.toText());
 
                 //we need to assert equals based on reduced precision
                 assertTrue("Resulting easting value is not valid",
@@ -90,7 +84,6 @@ public class TransverseMercatorTest {
                 assertTrue("Resulting northing value is not valid",
                         expected.northingValue(SI.METER, 0) ==
                         result.northingValue(SI.METER, 0));
-                System.out.println("successful");
             }
         }
     }

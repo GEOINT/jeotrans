@@ -24,20 +24,15 @@
 
 package org.geoint.jeotrans.coordinate;
 
-import org.geoint.jeotrans.coordinate.MGRS;
 import java.util.ArrayList;
-import javax.measure.quantity.Length;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
-import javax.measure.unit.Unit;
-import org.jscience.geography.coordinates.LatLong;
 import org.geoint.jeotrans.util.ConversionUtil;
-import org.jscience.geography.coordinates.crs.MgrsCRS;
-import org.jscience.geography.coordinates.crs.ProjectedCRS;
+import org.jscience.geography.coordinates.LatLong;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -66,7 +61,6 @@ public class MGRSTest {
      */
     @Test
     public void testCopy() {
-        System.out.println("MGRS.copy");
         //AUW9868322343
         char[] gridSquare = {'U', 'W'};
         MGRS first = MGRS.valueOf(0, 'A', gridSquare, 98683, 22343, SI.METER);
@@ -80,7 +74,6 @@ public class MGRSTest {
      */
     @Test
     public void testLatLongToMgrs() {
-        System.out.println("MGRS.latLongToMgrs");
 
         //iterate over the test cases
         for (CoordinateTestCase t : testCases)
@@ -89,10 +82,7 @@ public class MGRSTest {
             
             if (t.getExpectedMGRS() != null)
             {
-                System.out.print("Testing "+t.getLatLong().toString()+
-                        "(expected: "+expected.toText()+")   ");
                 MGRS result = MGRS.latLongToMgrs(t.getLatLong());
-                System.out.print("result: "+result.toText());
 
                 assertTrue("Resulting easting value not valid",
                         expected.eastingValue(SI.METER, 0) ==
@@ -100,7 +90,6 @@ public class MGRSTest {
                 assertTrue("Result northing value is not valid",
                         expected.northingValue(SI.METER, 0) ==
                         result.northingValue(SI.METER, 0));
-                System.out.println("  successful");
             }
         }
     }
@@ -111,7 +100,6 @@ public class MGRSTest {
     @Test
     public void testMgrsToLatLong ()
     {
-        System.out.println("MGRS.mgrsToLatLong");
         //iterate over the test cases
         for (CoordinateTestCase t : testCases)
         {
@@ -119,11 +107,8 @@ public class MGRSTest {
 
             if (t.getExpectedMGRS() != null)
             {
-                System.out.print("Testing "+t.getExpectedMGRS()+
-                        "(expected: "+expected.toText()+")   ");
                 MGRS mgrs = MGRS.latLongToMgrs(t.getLatLong());
                 LatLong result = MGRS.mgrsToLatLong(mgrs);
-                System.out.print("result: "+result.toText());
 
                 assertEquals("Resulting latitude value not valid",
                         ConversionUtil.roundHalfUp(expected.latitudeValue(NonSI.DEGREE_ANGLE), 6),
@@ -133,7 +118,6 @@ public class MGRSTest {
                         ConversionUtil.roundHalfUp(expected.longitudeValue(NonSI.DEGREE_ANGLE), 6),
                          ConversionUtil.roundHalfUp(result.longitudeValue(NonSI.DEGREE_ANGLE), 6),
                          MAX_GEODETIC_DELTA);
-                System.out.println("  successful");
             }
         }
     }

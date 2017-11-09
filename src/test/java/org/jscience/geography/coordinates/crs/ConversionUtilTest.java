@@ -23,11 +23,11 @@
  */
 package org.jscience.geography.coordinates.crs;
 
-import org.geoint.jeotrans.util.ConversionUtil;
 import javax.measure.unit.NonSI;
+import org.geoint.jeotrans.util.ConversionUtil;
 import org.jscience.geography.coordinates.LatLong;
-import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
 /**
  *
@@ -43,7 +43,6 @@ public class ConversionUtilTest {
      */
     @Test
     public void testGetLatitudeZone_double_Unit() {
-        System.out.println("ConversionUtil.getLatitudeZone()");
 
         //iterate over all the Zone values, testing the correct zone code
         //is resolved
@@ -52,13 +51,9 @@ public class ConversionUtilTest {
             LatLong latLong = LatLong.valueOf(z.getLowerLatitude()+2,
                     z.getLongitude(), NonSI.DEGREE_ANGLE);
             char result = ConversionUtil.getLatitudeZone(latLong);
-            System.out.print("Testing Zone: "+z.name()+"   " +
-                    "Lat: "+latLong.latitudeValue(NonSI.DEGREE_ANGLE)+"    " +
-                    "Long: "+latLong.longitudeValue(NonSI.DEGREE_ANGLE));
             String error = "Latitude "+(z.lowerLatitude+2)+" incorrectly mapped to "+
                         Zones.valueOf(String.valueOf(result)).name();
             assertEquals(error, z, Zones.valueOf(String.valueOf(result)));
-            System.out.println("   successful");
         }
     }
 

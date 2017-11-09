@@ -27,7 +27,6 @@ import javax.measure.Measure;
 import javax.measure.converter.ConversionException;
 import javax.measure.unit.SI;
 import org.geoint.jeotrans.coordinate.TransverseMercator;
-
 import org.opengis.referencing.cs.CoordinateSystem;
 
 /**

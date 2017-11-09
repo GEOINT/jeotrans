@@ -30,9 +30,9 @@ import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
 import org.jscience.geography.coordinates.LatLong;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *

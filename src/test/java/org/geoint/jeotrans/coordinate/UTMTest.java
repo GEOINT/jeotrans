@@ -24,16 +24,15 @@
 
 package org.geoint.jeotrans.coordinate;
 
-import org.geoint.jeotrans.coordinate.UTM;
 import java.util.ArrayList;
 import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
-import org.jscience.geography.coordinates.LatLong;
 import org.geoint.jeotrans.util.ConversionUtil;
+import org.jscience.geography.coordinates.LatLong;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -60,7 +59,6 @@ public class UTMTest {
      */
     @Test
     public void testCopy() {
-        System.out.println("UTM.copy()");
         UTM first = UTM.valueOf(50, 'S', 666792, 3547343, SI.METER);
         UTM second = first.copy();
         assertFalse("Did not make a copy", first == second);
@@ -72,7 +70,6 @@ public class UTMTest {
      */
     @Test
     public void testLatLongToUtm_LatLong() {
-        System.out.println("UTM.latLongToUtm()");
 
         //iterate over the test cases
         for (CoordinateTestCase t : testCases)
@@ -81,11 +78,8 @@ public class UTMTest {
             if (expected != null)
             {
                 UTM result = UTM.latLongToUtm(t.getLatLong());
-                System.out.print("Testing "+t.getLatLong().toString()+" " +
-                        "(expected: "+expected.toText()+")   result: "+result.toText());
                 
                 assertTrue("Resulting value not valid", expected.equals(result));
-                System.out.println("  successful");
             }
         }
     }
@@ -96,7 +90,6 @@ public class UTMTest {
     @Test
     public void TestUtmToLatLong ()
     {
-        System.out.println("UTM.utmToLatLong()");
 
         //iterate over the test cases
         for (CoordinateTestCase t : testCases)
@@ -105,17 +98,13 @@ public class UTMTest {
             if (utm != null)
             {
                 LatLong expected = t.getLatLong();
-                System.out.print("Testing "+utm+" " +
-                        "(expected: "+expected.toText());
                 LatLong result = UTM.utmToLatLong(utm);
-                System.out.println("   result: "+result.toText());
                 assertTrue("Resulting latitude value not valid",
                         ConversionUtil.roundHalfUp(expected.latitudeValue(NonSI.DEGREE_ANGLE), 5) ==
                         ConversionUtil.roundHalfUp(result.latitudeValue(NonSI.DEGREE_ANGLE), 5));
                 assertTrue ("Resulting longitude value is not valid",
                         ConversionUtil.roundHalfUp(expected.longitudeValue(NonSI.DEGREE_ANGLE), 5) ==
                         ConversionUtil.roundHalfUp(result.longitudeValue(NonSI.DEGREE_ANGLE), 5));
-                System.out.println("  successful");
             }
         }
     }

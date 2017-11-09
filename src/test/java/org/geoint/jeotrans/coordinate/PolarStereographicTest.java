@@ -24,13 +24,12 @@
 
 package org.geoint.jeotrans.coordinate;
 
-import org.geoint.jeotrans.coordinate.PolarStereographic;
 import java.util.ArrayList;
 import javax.measure.unit.SI;
 import org.junit.AfterClass;
+import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -58,7 +57,6 @@ public class PolarStereographicTest {
     @Test
     public void testCopy()
     {
-        System.out.println("PolarStereographic.copy()");
         PolarStereographic first = PolarStereographic.valueOf(3812690, -1608704, SI.METER);
         PolarStereographic second = first.copy();
         assertFalse("Did not make a copy", first == second);
@@ -70,21 +68,16 @@ public class PolarStereographicTest {
      */
     @Test
     public void testLatLongToPolarStereographic_LatLong() {
-        System.out.println("PolarStereographic.latLongToPolarStereographic()");
         //iterate over the test cases
         for (CoordinateTestCase t : testCases)
         {
             PolarStereographic expected = t.getExpectedPS();
             if (expected != null)
             {
-                System.out.print("Testing "+t.getLatLong().toString()+" " +
-                        "(expected: "+expected.toText()+")");
                 PolarStereographic result =
                         PolarStereographic.latLongToPolarStereographic(t.getLatLong());
-                System.out.print("   result: "+result.toText());
 
                 assertTrue("Resulting value not valid", expected.equals(result));
-                System.out.println("successful");
             }
         }
     }

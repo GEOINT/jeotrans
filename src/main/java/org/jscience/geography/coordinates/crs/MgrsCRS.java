@@ -23,7 +23,6 @@
  */
 package org.jscience.geography.coordinates.crs;
 
-import org.geoint.jeotrans.util.ConversionUtil;
 import javax.measure.Measure;
 import javax.measure.converter.ConversionException;
 import javax.measure.unit.NonSI;
@@ -31,6 +30,7 @@ import javax.measure.unit.SI;
 import org.geoint.jeotrans.coordinate.MGRS;
 import org.geoint.jeotrans.coordinate.UPS;
 import org.geoint.jeotrans.coordinate.UTM;
+import org.geoint.jeotrans.util.ConversionUtil;
 import org.jscience.geography.coordinates.LatLong;
 import org.jscience.geography.coordinates.crs.CoordinateReferenceSystem.AbsolutePosition;
 import org.opengis.referencing.cs.CoordinateSystem;
