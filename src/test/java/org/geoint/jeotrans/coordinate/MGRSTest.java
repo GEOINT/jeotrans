@@ -21,7 +21,6 @@
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *  THE SOFTWARE.
  */
-
 package org.geoint.jeotrans.coordinate;
 
 import java.util.ArrayList;
@@ -49,7 +48,7 @@ public class MGRSTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         testCases = CoordinateTestCase.getDefaultTestCases();
-        
+
     }
 
     @AfterClass
@@ -76,20 +75,18 @@ public class MGRSTest {
     public void testLatLongToMgrs() {
 
         //iterate over the test cases
-        for (CoordinateTestCase t : testCases)
-        {
+        for (CoordinateTestCase t : testCases) {
             MGRS expected = t.getExpectedMGRS();
-            
-            if (t.getExpectedMGRS() != null)
-            {
+
+            if (t.getExpectedMGRS() != null) {
                 MGRS result = MGRS.latLongToMgrs(t.getLatLong());
 
                 assertTrue("Resulting easting value not valid",
-                        expected.eastingValue(SI.METER, 0) ==
-                        result.eastingValue(SI.METER, 0));
+                        expected.eastingValue(SI.METER, 0)
+                        == result.eastingValue(SI.METER, 0));
                 assertTrue("Result northing value is not valid",
-                        expected.northingValue(SI.METER, 0) ==
-                        result.northingValue(SI.METER, 0));
+                        expected.northingValue(SI.METER, 0)
+                        == result.northingValue(SI.METER, 0));
             }
         }
     }
@@ -98,15 +95,12 @@ public class MGRSTest {
      * Test of mgrsToLatLong method, of class MGRS
      */
     @Test
-    public void testMgrsToLatLong ()
-    {
+    public void testMgrsToLatLong() {
         //iterate over the test cases
-        for (CoordinateTestCase t : testCases)
-        {
+        for (CoordinateTestCase t : testCases) {
             LatLong expected = t.getLatLong();
 
-            if (t.getExpectedMGRS() != null)
-            {
+            if (t.getExpectedMGRS() != null) {
                 MGRS mgrs = MGRS.latLongToMgrs(t.getLatLong());
                 LatLong result = MGRS.mgrsToLatLong(mgrs);
 
@@ -116,9 +110,15 @@ public class MGRSTest {
                         MAX_GEODETIC_DELTA);
                 assertEquals("Resulting longitude value not valid",
                         ConversionUtil.roundHalfUp(expected.longitudeValue(NonSI.DEGREE_ANGLE), 6),
-                         ConversionUtil.roundHalfUp(result.longitudeValue(NonSI.DEGREE_ANGLE), 6),
-                         MAX_GEODETIC_DELTA);
+                        ConversionUtil.roundHalfUp(result.longitudeValue(NonSI.DEGREE_ANGLE), 6),
+                        MAX_GEODETIC_DELTA);
             }
         }
+    }
+
+    @Test
+    public void tempTestCaseIssue3() {
+        CoordinateTestCase is = new CoordinateTestCase(LatLong.valueOf(-0.338917, -90.669525, NonSI.DEGREE_ANGLE));
+        MGRS.latLongToMgrs(is.getLatLong());
     }
 }
