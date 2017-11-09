@@ -93,19 +93,7 @@ public final class UpsCRS extends ProjectedCRS<UPS> {
         double longitude = ap.longitudeWGS84.doubleValue(SI.RADIAN);
         char hemisphere;
 
-        if (latitude < 0 && (latitude > MIN_SOUTH_LAT || latitude < -MAX_LAT)) {
-            throw new ConversionException("Latitude outside of valid range "
-                    + "(North Pole: 83.5 to 90, South Pole: -79.5 to -90)");
-        }
-        if (latitude >= 0 && (latitude < MIN_NORTH_LAT || latitude > MAX_LAT)) {
-            throw new ConversionException("Latitude outside of valid range "
-                    + "(North Pole: 83.5 to 90, South Pole: -79.5 to -90)");
-        }
-        if ((longitude < -Math.PI) || (longitude > (2 * Math.PI))) {
-            /* slam out of range */
-            throw new ConversionException("Longitude outside of valid "
-                    + "range (-180 to 360 degrees)");
-        }
+        validateUpsCoord(latitude, longitude);
 
         if (latitude < 0) {
             upsOriginLatitude = -MAX_ORIGIN_LAT;
@@ -171,21 +159,30 @@ public final class UpsCRS extends ProjectedCRS<UPS> {
 
         double lat = latLong.latitudeValue(SI.RADIAN);
         double lon = latLong.longitudeValue(SI.RADIAN);
-        if ((lat < 0) && (lat > MIN_SOUTH_LAT)) {
-            throw new ConversionException("Latitude outside of valid range "
-                    + "(North Pole: 83.5 to 90, South Pole: -79.5 to -90)");
-        }
-        if ((lon >= 0) && (lon < MIN_NORTH_LAT)) {
-            System.out.println("Longitude: " + lon);
 
-            //throw new ConversionException("Longitude outside of valid range " +
-            //        "(-180 to 360 degrees)");
-        }
+        validateUpsCoord(lat, lon);
 
         ap.latitudeWGS84 = Measure.valueOf(lat, SI.RADIAN);
         ap.longitudeWGS84 = Measure.valueOf(lon, SI.RADIAN);
 
         return ap;
+    }
+
+    private void validateUpsCoord(double latitudeRadian,
+            double longitudeRadian) throws ConversionException {
+        if (latitudeRadian < 0 && (latitudeRadian > MIN_SOUTH_LAT || latitudeRadian < -MAX_LAT)) {
+            throw new ConversionException("Latitude outside of valid range "
+                    + "(North Pole: 83.5 to 90, South Pole: -79.5 to -90)");
+        }
+        if (latitudeRadian >= 0 && (latitudeRadian < MIN_NORTH_LAT || latitudeRadian > MAX_LAT)) {
+            throw new ConversionException("Latitude outside of valid range "
+                    + "(North Pole: 83.5 to 90, South Pole: -79.5 to -90)");
+        }
+        if ((longitudeRadian < -Math.PI) || (longitudeRadian > (2 * Math.PI))) {
+            /* slam out of range */
+            throw new ConversionException("Longitude outside of valid "
+                    + "range (-180 to 360 degrees)");
+        }
     }
 
     @Override
