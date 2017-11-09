@@ -285,6 +285,19 @@ public class CoordinateTestCase {
         z31_2.setExpectedPS(PolarStereographic.valueOf(3812689.985, -1608704.193, SI.METER));
         defaultTestCases.add(z31_2);
 
+        /*
+         * south-western hemisphere (Isla Santiago, Galápagos Islands)
+         *
+         * Geodetic -0.338917, -90.669525
+         * UTM 759391.02 9962508.26
+         * MGRS 15MYV5939162508
+         * TM LONGITUDE OUT OF RANGE
+         * PS LATITUDE OUT OF RANGE
+         */
+        CoordinateTestCase is = new CoordinateTestCase(LatLong.valueOf(-0.338917, -90.669525, NonSI.DEGREE_ANGLE));
+        is.setExpectedMGRS(MGRS.valueOf(15, 'M', "YV".toCharArray(), 59391, 62508, SI.METER));
+        is.setExpectedUTM(UTM.valueOf(15, 'M', 759391.02, 9962508.26, SI.METER));
+        defaultTestCases.add(is);
         
         return defaultTestCases;
     }
