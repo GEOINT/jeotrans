@@ -93,16 +93,11 @@ public final class UpsCRS extends ProjectedCRS<UPS> {
         double longitude = ap.longitudeWGS84.doubleValue(SI.RADIAN);
         char hemisphere;
 
-        if ((latitude < -MAX_LAT) || (latitude > MAX_LAT)) {
-            /* latitude out of range */
+        if (latitude < 0 && (latitude > MIN_SOUTH_LAT || latitude < -MAX_LAT)) {
             throw new ConversionException("Latitude outside of valid range "
                     + "(North Pole: 83.5 to 90, South Pole: -79.5 to -90)");
         }
-        if ((latitude < 0) && (latitude > MIN_SOUTH_LAT)) {
-            throw new ConversionException("Latitude outside of valid range "
-                    + "(North Pole: 83.5 to 90, South Pole: -79.5 to -90)");
-        }
-        if ((latitude >= 0) && (latitude < MIN_NORTH_LAT)) {
+        if (latitude >= 0 && (latitude < MIN_NORTH_LAT || latitude > MAX_LAT)) {
             throw new ConversionException("Latitude outside of valid range "
                     + "(North Pole: 83.5 to 90, South Pole: -79.5 to -90)");
         }

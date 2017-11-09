@@ -24,9 +24,11 @@
 
 package org.geoint.jeotrans.coordinate;
 
-import org.geoint.jeotrans.coordinate.UPS;
 import java.util.ArrayList;
+import javax.measure.converter.ConversionException;
+import javax.measure.unit.NonSI;
 import javax.measure.unit.SI;
+import org.jscience.geography.coordinates.LatLong;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -57,7 +59,6 @@ public class UPSTest {
      */
     @Test
     public void testCopy() {
-        System.out.println("UPS.copy");
         UPS first = UPS.valueOf(1698683, 2822343, 'S', SI.METER);
         UPS second = first.copy();
         assertFalse("Did not make a copy", first == second);
@@ -69,20 +70,15 @@ public class UPSTest {
      */
     @Test
     public void testLatLongToUps() {
-        System.out.println("UPS.latLongToUps");
         for (CoordinateTestCase t : testCases)
         {
             UPS expected = t.getExpectedUPS();
             if (expected != null)
             {
-                System.out.print("Testing "+t.getLatLong().toString()+" " +
-                        "(expected: "+expected.toText()+")");
                 UPS result =
                         UPS.latLongToUps(t.getLatLong());
-                System.out.print("   result: "+result.toText());
 
                 assertTrue("Resulting value not valid", expected.equals(result));
-                System.out.println("  successful");
             }
         }
     }
@@ -90,22 +86,34 @@ public class UPSTest {
     @Test
     public void testUpsToLatLong ()
     {
-        System.out.println("UPS.upsToLatLong");
         for (CoordinateTestCase t : testCases)
         {
             UPS expected = t.getExpectedUPS();
             if (expected != null)
             {
-                System.out.print("Testing "+t.getLatLong().toString()+" " +
-                        "(expected: "+expected.toText()+")");
                 UPS result =
                         UPS.latLongToUps(t.getLatLong());
-                System.out.print("   result: "+result.toText());
-
                 assertTrue("Resulting value not valid", expected.equals(result));
-                System.out.println("  successful");
             }
         }
+    }
+    
+    /**
+     * Ensure ConversionException is thrown for invalid southern latitude.
+     */
+    @Test(expected=ConversionException.class)
+    public void testInvalidSouthernLatitude() {
+        UPS.latLongToUps(
+                LatLong.valueOf(-92.123456789, 20.123456789, NonSI.DEGREE_ANGLE));
+    }
+    
+    /**
+     * Ensure ConversionException is thrown for invalid northern latitude.
+     */
+    @Test(expected=ConversionException.class)
+    public void testInvalidNorthernLatitude() {
+         UPS.latLongToUps(
+                LatLong.valueOf(92.123456789, 20.123456789, NonSI.DEGREE_ANGLE));
     }
 
 }
